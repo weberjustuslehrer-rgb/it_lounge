@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Das Große Physik-Labor 🧪</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f0f9ff;
+            --white: #ffffff;
+            --text: #0c4a6e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 25px;
+            border: 5px solid var(--primary);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .score-display {
+            background: var(--secondary);
+            color: #451a03;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: inline-block;
+            margin-top: 10px;
+            border: 3px solid white;
+        }
+
+        /* Navigation */
+        .tabs {
+            display: flex;
+            background: #e0f2fe;
+            padding: 10px;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary);
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            padding: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Wissen-Karten */
+        .topic-card {
+            background: #f8fafc;
+            border-left: 8px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .topic-card h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #e0f2fe; padding-bottom: 5px; }
+        
+        /* Quiz-Karten */
+        .quiz-card {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 20px;
+        }
+
+        .question-num {
+            background: var(--primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .question-text { font-size: 1.2rem; font-weight: bold; display: block; margin-bottom: 15px; }
+
+        .options-grid { display: grid; gap: 10px; }
+
+        .opt-btn {
+            text-align: left;
+            padding: 12px 15px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .opt-btn:hover { background: #f0f9ff; border-color: var(--primary); }
+
+        .input-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct { background: #dcfce7; color: #166534; display: block; }
+        .feedback.wrong { background: #fee2e2; color: #991b1b; display: block; }
+
+        /* Hilfe */
+        .help-box {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 2px dashed var(--secondary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🚀 Das Große Physik-Labor</h1>
+        <div class="score-display">Punkte: 🏆 <span id="currentScore">0</span> / 20</div>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab-btn active" onclick="showTab(event, 'lernen')">📖 Wissen</button>
+        <button class="tab-btn" onclick="showTab(event, 'quiz')">✍️ Quiz (20)</button>
+        <button class="tab-btn" onclick="showTab(event, 'hilfe')">💡 Tipps</button>
+    </nav>
+
+    <div id="lernen" class="content-section active">
+        <div class="topic-card">
+            <h2>1. Mechanik: Bewegen & Heben</h2>
+            <p>Mechanik erklärt, wie sich Dinge bewegen. Ein wichtiger Trick ist der <b>Hebel</b>. Je länger der Arm eines Hebels ist, desto weniger Kraft brauchst du. Ein Flaschenzug hilft dir, schwere Lasten hochzuziehen, indem er das Gewicht auf viele Seile verteilt.</p>
+            <p><b>Trägheit:</b> Ein Ball, der liegt, will liegen bleiben. Ein Ball, der rollt, will weiterrollen. Erst eine Kraft (wie deine Hand oder Reibung) hält ihn auf.</p>
+        </div>
+
+        <div class="topic-card">
+            <h2>2. Magnetismus: Unsichtbare Kräfte</h2>
+            <p>Jeder Magnet hat zwei <b>Pole</b>: Nord und Süd. 
+            Gleiche Pole (Nord & Nord) hassen sich und stoßen sich ab. 
+            Ungleiche Pole (Nord & Süd) ziehen sich magisch an!</p>
+        </div>
+
+        <div class="topic-card">
+            <h2>3. Optik: Alles rund ums Licht</h2>
+            <p>Licht breitet sich immer <b>geradlinig</b> aus. Wenn ein Gegenstand im Weg steht, entsteht dahinter ein Schatten. Glatte Oberflächen (wie Spiegel) werfen Licht zurück – das nennen wir <b>Reflexion</b>.</p>
+        </div>
+
+        <div class="topic-card">
+            <h2>4. Elektrizität: Energie aus der Leitung</h2>
+            <p>Damit eine Lampe leuchtet, muss der <b>Stromkreis geschlossen</b> sein. Es darf keine Lücke geben! Stoffe wie Kupfer sind gute <b>Leiter</b>. Stoffe wie Plastik oder Gummi stoppen den Strom (<b>Isolatoren</b>).</p>
+        </div>
+
+        <div class="topic-card">
+            <h2>5. Wärmelehre: Eis, Wasser, Dampf</h2>
+            <p>Stoffe können ihren Zustand ändern. Wasser ist flüssig. Wenn es sehr kalt wird (0°C), gefriert es zu Eis (fest). Wenn es kocht (100°C), wird es zu Wasserdampf (gasförmig).</p>
+        </div>
+    </div>
+
+    <div id="quiz" class="content-section">
+        <div id="quiz-container">
+            <div class="quiz-card" id="q1">
+                <div class="question-num">Frage 1</div>
+                <span class="question-text">Wie nennt man den Punkt, um den sich eine Wippe dreht?</span>
+                <input type="text" id="in1" class="input-box" placeholder="D...punkt">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(1, 'drehpunkt')">Prüfen</button>
+                <div id="f1" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q2">
+                <div class="question-num">Frage 2</div>
+                <span class="question-text">Was passiert, wenn man zwei gleiche Magnetpole (z.B. Süd und Süd) zusammenhält?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(2, 'a')">A) Sie ziehen sich an</button>
+                    <button class="opt-btn" onclick="checkMC(2, 'b')">B) Sie stoßen sich ab</button>
+                </div>
+                <div id="f2" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q3">
+                <div class="question-num">Frage 3</div>
+                <span class="question-text">Warum sind Stromkabel außen mit Plastik umhüllt?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(3, 'a')">A) Weil Plastik Strom leitet</button>
+                    <button class="opt-btn" onclick="checkMC(3, 'b')">B) Damit kein Strom nach außen fließt (Isolator)</button>
+                </div>
+                <div id="f3" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q4">
+                <div class="question-num">Frage 4</div>
+                <span class="question-text">Wie nennt man das Zurückwerfen von Licht an einem Spiegel?</span>
+                <input type="text" id="in4" class="input-box" placeholder="R...ion">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(4, 'reflexion')">Prüfen</button>
+                <div id="f4" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q5">
+                <div class="question-num">Frage 5</div>
+                <span class="question-text">Ab welcher Temperatur (in Grad Celsius) gefriert Wasser zu Eis?</span>
+                <input type="text" id="in5" class="input-box" placeholder="Zahl eingeben...">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(5, ['0', '0 grad', 'null'])">Prüfen</button>
+                <div id="f5" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q6">
+                <div class="question-num">Frage 6</div>
+                <span class="question-text">Welche Kraft sorgt dafür, dass ein geworfener Ball wieder zur Erde fällt?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(6, 'a')">A) Die Magnetkraft</button>
+                    <button class="opt-btn" onclick="checkMC(6, 'b')">B) Die Schwerkraft</button>
+                </div>
+                <div id="f6" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q7">
+                <div class="question-num">Frage 7</div>
+                <span class="question-text">Wie nennt man Stoffe, durch die Strom fließen kann (z.B. Eisen)?</span>
+                <input type="text" id="in7" class="input-box" placeholder="L...er">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(7, 'leiter')">Prüfen</button>
+                <div id="f7" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q8">
+                <div class="question-num">Frage 8</div>
+                <span class="question-text">Was braucht man, um Licht zu brechen und einen Regenbogen zu erzeugen?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(8, 'a')">A) Ein Prisma oder Wassertropfen</button>
+                    <button class="opt-btn" onclick="checkMC(8, 'b')">B) Einen Hammer</button>
+                </div>
+                <div id="f8" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q9">
+                <div class="question-num">Frage 9</div>
+                <span class="question-text">Wie nennt man den Zustand von kochendem Wasser?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(9, 'a')">A) Fest</button>
+                    <button class="opt-btn" onclick="checkMC(9, 'b')">B) Gasförmig (Wasserdampf)</button>
+                </div>
+                <div id="f9" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q10">
+                <div class="question-num">Frage 10</div>
+                <span class="question-text">Welcher Hebelarm ist bei einer Zange länger?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(10, 'a')">A) Der Griff (wo man anfasst)</button>
+                    <button class="opt-btn" onclick="checkMC(10, 'b')">B) Die Schneide (vorne)</button>
+                </div>
+                <div id="f10" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q11">
+                <div class="question-num">Frage 11</div>
+                <span class="question-text">Wahr oder Falsch: Magnete ziehen auch Plastik an.</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(11, 'falsch')">Falsch</button>
+                    <button class="opt-btn" onclick="checkMC(11, 'wahr')">Wahr</button>
+                </div>
+                <div id="f11" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q12">
+                <div class="question-num">Frage 12</div>
+                <span class="question-text">Was entsteht, wenn ein undurchsichtiger Gegenstand das Licht blockiert?</span>
+                <input type="text" id="in12" class="input-box" placeholder="Sch...ten">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(12, 'schatten')">Prüfen</button>
+                <div id="f12" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q13">
+                <div class="question-num">Frage 13</div>
+                <span class="question-text">Welche Form der Energie steckt in einer Batterie?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(13, 'a')">A) Chemische Energie</button>
+                    <button class="opt-btn" onclick="checkMC(13, 'b')">B) Bewegungsenergie</button>
+                </div>
+                <div id="f13" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q14">
+                <div class="question-num">Frage 14</div>
+                <span class="question-text">Wie nennt man es, wenn ein Körper seine Bewegung beibehalten will?</span>
+                <input type="text" id="in14" class="input-box" placeholder="T...heit">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(14, 'trägheit')">Prüfen</button>
+                <div id="f14" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q15">
+                <div class="question-num">Frage 15</div>
+                <span class="question-text">Warum schwimmt ein großes Schiff aus Eisen, aber ein Nagel sinkt?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(15, 'a')">A) Wegen der Farbe des Schiffes</button>
+                    <button class="opt-btn" onclick="checkMC(15, 'b')">B) Wegen der Form und dem Auftrieb</button>
+                </div>
+                <div id="f15" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q16">
+                <div class="question-num">Frage 16</div>
+                <span class="question-text">Welches Metall wird von Magneten angezogen?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(16, 'a')">A) Gold</button>
+                    <button class="opt-btn" onclick="checkMC(16, 'b')">B) Eisen</button>
+                    <button class="opt-btn" onclick="checkMC(16, 'c')">C) Silber</button>
+                </div>
+                <div id="f16" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q17">
+                <div class="question-num">Frage 17</div>
+                <span class="question-text">Wie nennt man das "Bremsen" von zwei Flächen, die aufeinander gleiten?</span>
+                <input type="text" id="in17" class="input-box" placeholder="R...ung">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(17, 'reibung')">Prüfen</button>
+                <div id="f17" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q18">
+                <div class="question-num">Frage 18</div>
+                <span class="question-text">Wahr oder Falsch: Licht braucht Luft, um sich zu bewegen.</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(18, 'falsch')">Falsch (Licht geht auch durch das leere Weltall)</button>
+                    <button class="opt-btn" onclick="checkMC(18, 'wahr')">Wahr</button>
+                </div>
+                <div id="f18" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q19">
+                <div class="question-num">Frage 19</div>
+                <span class="question-text">Was passiert mit der Kraft, wenn man einen Flaschenzug mit vielen Rollen benutzt?</span>
+                <div class="options-grid">
+                    <button class="opt-btn" onclick="checkMC(19, 'a')">A) Man braucht mehr Kraft</button>
+                    <button class="opt-btn" onclick="checkMC(19, 'b')">B) Man braucht viel weniger Kraft</button>
+                </div>
+                <div id="f19" class="feedback"></div>
+            </div>
+
+            <div class="quiz-card" id="q20">
+                <div class="question-num">Frage 20</div>
+                <span class="question-text">Wie nennt man den Vorgang, wenn aus Wasser Dampf wird?</span>
+                <input type="text" id="in20" class="input-box" placeholder="V...ampfen">
+                <button class="tab-btn" style="background:var(--secondary); color:white" onclick="checkTxt(20, 'verdampfen')">Prüfen</button>
+                <div id="f20" class="feedback"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="hilfe" class="content-section">
+        <h2>💡 Tipps für schlaue Köpfe</h2>
+        <div class="help-box">
+            <h3>🧲 Magnet-Regel</h3>
+            <p>Denk an zwei beste Freunde: Nordpol und Südpol ziehen sich an. Aber zwei gleiche Pole streiten sich immer und stoßen sich weg!</p>
+        </div>
+        <div class="help-box">
+            <h3>⚖️ Hebel-Trick</h3>
+            <p>Stell dir eine Schere vor. Je weiter hinten du anfasst (langer Griff), desto leichter kannst du dicke Pappe schneiden.</p>
+        </div>
+        <div class="help-box">
+            <h3>⚡ Strom-Sicherheit</h3>
+            <p>Metalle lassen Strom durch (Leiter). Gummi und Plastik halten ihn auf (Isolatoren). Deshalb sind Gummistiefel bei Gewitter eine gute Idee!</p>
+        </div>
+        <div class="help-box">
+            <h3>🌈 Licht-Geheimnis</h3>
+            <p>Weißes Licht sieht nur weiß aus. In Wirklichkeit stecken alle Farben des Regenbogens darin! Ein Wassertropfen kann sie wieder trennen.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let score = 0;
+    let answered = [];
+
+    function showTab(evt, name) {
+        document.querySelectorAll('.content-section').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(name).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    const mcAnswers = {
+        2:'b', 3:'b', 6:'b', 8:'a', 9:'b', 10:'a', 11:'falsch', 13:'a', 15:'b', 16:'b', 18:'falsch', 19:'b'
+    };
+
+    function checkMC(num, choice) {
+        if(answered.includes(num)) return;
+        let f = document.getElementById('f'+num);
+        if(choice === mcAnswers[num]) {
+            f.innerText = "Super! Das ist absolut richtig! ✨";
+            f.className = "feedback correct";
+            updateScore(num);
+        } else {
+            f.innerText = "Leider nicht. Schau nochmal im Wissen-Tab nach!";
+            f.className = "feedback wrong";
+        }
+    }
+
+    function checkTxt(num, correct) {
+        if(answered.includes(num)) return;
+        let val = document.getElementById('in'+num).value.toLowerCase().trim();
+        let f = document.getElementById('f'+num);
+        let isCorrect = Array.isArray(correct) ? correct.includes(val) : val === correct;
+
+        if(isCorrect) {
+            f.innerText = "Genau! Du hast das richtige Wort gefunden! 🏆";
+            f.className = "feedback correct";
+            updateScore(num);
+        } else {
+            f.innerText = "Fast! Überprüfe nochmal die Schreibweise.";
+            f.className = "feedback wrong";
+        }
+    }
+
+    function updateScore(num) {
+        score++;
+        answered.push(num);
+        document.getElementById('currentScore').innerText = score;
+        if(score === 20) {
+            alert("WAHNSINN! Du hast alle 20 Fragen richtig beantwortet! Du bist ein wahrer Physik-Professor! 🎓🥇");
+        }
+    }
+</script>
+
+</body>
+</html>

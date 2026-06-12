@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Retro-OS Simulator</title>
+    <style>
+        :root {
+            --taskbar-bg: #222;
+            --desktop-bg: #34495e;
+            --window-bg: #ecf0f1;
+            --header-bg: #bdc3c7;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%; overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--desktop-bg);
+            user-select: none;
+        }
+
+		#desktop {
+            width: 100vw; height: calc(100vh - 40px);
+            position: relative;
+            background-image: url('Hintergrund.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .icon {
+            width: 80px; text-align: center; color: white;
+            padding: 10px; cursor: pointer; position: absolute;
+            transition: background 0.2s; border-radius: 8px;
+        }
+        .icon:hover { background: rgba(255,255,255,0.1); }
+        .icon div { font-size: 40px; margin-bottom: 5px; }
+
+        /* Window System */
+        .window {
+            position: absolute; background: var(--window-bg); 
+            border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; flex-direction: column; z-index: 10;
+            border: 1px solid #999;
+        }
+        .window-header {
+            background: var(--header-bg); padding: 10px; 
+            border-radius: 6px 6px 0 0; display: flex; 
+            justify-content: space-between; align-items: center;
+            font-weight: bold; cursor: default;
+        }
+        .close-btn { 
+            cursor: pointer; background: #e74c3c; color: white; 
+            border: none; border-radius: 3px; padding: 2px 8px; 
+        }
+        .window-content { flex: 1; padding: 15px; overflow: hidden; }
+
+        canvas { background: #000; display: block; margin: 0 auto; border: 2px solid #333; }
+
+        /* Taskbar */
+        #taskbar {
+            height: 40px; background: var(--taskbar-bg);
+            position: absolute; 
+			bottom: 0; 
+			width: 100%;
+            display: flex; align-items: center; 
+			justify-content: space-between; 
+			padding: 0 15px; color: white;
+            box-sizing: border-box; 
+			font-size: 14px;
+        }
+
+        /* Turtle Controls */
+        #turtle-controls { margin-top: 10px; display: flex; gap: 5px; }
+        #turtle-input { flex: 1; padding: 5px; border-radius: 4px; border: 1px solid #ccc; }
+        button { cursor: pointer; padding: 5px 10px; background: #2ecc71; border: none; border-radius: 4px; color: white; }
+		
+		/* Vollbild-Klasse */
+        .window.maximized {
+            width: 100vw !important;
+            height: calc(100vh - 40px) !important;
+            top: 0 !important;
+            left: 0 !important;
+            border-radius: 0;
+            z-index: 1000;
+        }
+
+        /* Resize-Griff unten rechts */
+        .resizer {
+            width: 15px; height: 15px;
+            background: linear-gradient(135deg, transparent 50%, #999 50%);
+            position: absolute; right: 0; bottom: 0;
+            cursor: se-resize; border-radius: 0 0 6px 0;
+        }
+
+        /* Maximieren-Button Style */
+        .max-btn { 
+            cursor: pointer; background: #3498db; color: white; 
+            border: none; border-radius: 3px; padding: 2px 6px; margin-right: 5px;
+        }
+		
+		/* Spezifische Styles für Files Pro Game */
+#win-files { width: 600px !important; height: 500px !important; } /* Fenster standardmäßig größer */
+
+.explorer-container { display: flex; flex-direction: column; height: 100%; }
+.explorer-top { flex: 1; background: #fff; border-bottom: 2px solid #bdc3c7; padding: 10px; overflow-y: auto; }
+.explorer-bottom { flex: 1; background: #f9f9f9; padding: 10px; overflow-y: auto; font-family: monospace; border-top: 1px solid #ccc; }
+
+.file-item { display: inline-block; width: 70px; text-align: center; margin: 10px; cursor: pointer; vertical-align: top; }
+.file-item:hover { background: #e8f4fd; border-radius: 4px; }
+.file-icon { font-size: 30px; display: block; }
+.file-name { font-size: 11px; word-wrap: break-word; }
+
+.breadcrumb { font-size: 12px; margin-bottom: 10px; color: #555; font-weight: bold; }
+.game-task { background: #fff9c4; padding: 8px; border: 1px solid #fbc02d; font-size: 13px; margin-bottom: 10px; }
+.controls-bar { display: flex; gap: 5px; margin-bottom: 10px; }
+
+/* --- NEUE STYLES FÜR WORD PRO & GAMES --- */
+.toolbar { background: #ecf0f1; padding: 5px; border-bottom: 1px solid #ccc; display: flex; gap: 5px; }
+.toolbar button { background: #bdc3c7; color: #333; font-weight: bold; border-radius: 3px; }
+.toolbar button:hover { background: #95a5a6; }
+#word-editor { background: white; padding: 15px; flex: 1; overflow-y: auto; border: 1px inset #ccc; outline: none; line-height: 1.5; font-family: 'Times New Roman', serif; }
+#word-editor b, #word-editor strong { font-weight: bold; }
+#word-editor i, #word-editor em { font-style: italic; }
+#word-editor u { text-decoration: underline; }
+
+.score-board { display: flex; justify-content: space-between; padding: 5px 10px; background: #333; color: #0f0; font-family: monospace; font-size: 14px; border-bottom: 2px solid #222; }
+
+/* Bessere Canvas-Skalierung beim Ändern der Fenstergröße */
+.window-content { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+canvas { max-width: 100%; max-height: 100%; object-fit: contain; margin: auto; display: block; }
+
+    </style>
+</head>
+<body>
+
+<div id="desktop">
+    <div class="icon" style="top:20px; left:20px;" onclick="openWindow('win-tetris')">
+        <div>🧩</div><span>Tetris</span>
+    </div>
+    <div class="icon" style="top:120px; left:20px;" onclick="openWindow('win-snake')">
+        <div>🐍</div><span>Snake</span>
+    </div>
+    <div class="icon" style="top:220px; left:20px;" onclick="openWindow('win-turtle')">
+        <div>🐢</div><span>Turtle</span>
+    </div>
+	<div class="icon" style="top:320px; left:20px;" onclick="openWindow('win-browser')">
+        <div>🌐</div><span>Browser</span>
+    </div>
+    <div class="icon" style="top:420px; left:20px;" onclick="openWindow('win-files')">
+        <div>📁</div><span>Dateien</span>
+    </div>
+	<div class="icon" style="top:520px; left:20px;" onclick="openWindow('win-word')">
+        <div>📝</div><span>Word</span>
+    </div>
+
+<div id="win-tetris" class="window" style="width: 320px; height: 500px; left: 150px; top: 50px;">
+        <div class="window-header">
+            <span>Tetris Pro</span>
+            <div>
+                <button class="max-btn" onclick="toggleMaximize('win-tetris')">▢</button>
+                <button class="close-btn" onclick="closeWindow('win-tetris')">X</button>
+            </div>
+        </div>
+        <div class="score-board">
+            <span id="tetris-score">Score: 0</span>
+            <span id="tetris-high">High: 0</span>
+        </div>
+        <div class="window-content" style="padding: 0; background: #111;">
+            <canvas id="tetris-canvas" width="200" height="400"></canvas>
+            <p style="font-size: 11px; text-align: center; color: #aaa; margin: 5px 0;">Pfeiltasten: Bewegen | Oben: Drehen</p>
+        </div>
+        <div class="resizer" onmousedown="initResize(event, 'win-tetris')"></div>
+    </div>
+
+    <div id="win-snake" class="window" style="width: 340px; height: 400px; left: 500px; top: 100px;">
+        <div class="window-header">
+            <span>Snake Pro</span>
+            <div>
+                <button class="max-btn" onclick="toggleMaximize('win-snake')">▢</button>
+                <button class="close-btn" onclick="closeWindow('win-snake')">X</button>
+            </div>
+        </div>
+        <div class="score-board">
+            <span id="snake-score">Score: 0</span>
+            <span id="snake-high">High: 0</span>
+        </div>
+        <div class="window-content" style="padding: 0; background: #111;">
+            <canvas id="snake-canvas" width="300" height="300"></canvas>
+            <p style="font-size: 11px; text-align: center; color: #aaa; margin: 5px 0;">Pfeiltasten steuern | Enter: Neustart</p>
+        </div>
+        <div class="resizer" onmousedown="initResize(event, 'win-snake')"></div>
+    </div>
+
+    <div id="win-word" class="window" style="width: 600px; height: 500px; left: 200px; top: 120px;">
+        <div class="window-header">
+            <span>Word Pro</span>
+            <div>
+                <button class="max-btn" onclick="toggleMaximize('win-word')">▢</button>
+                <button class="close-btn" onclick="closeWindow('win-word')">X</button>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 0;">
+            <div id="word-task-area" class="game-task">Lade Aufgabe...</div>
+            <div class="toolbar">
+                <button onclick="document.execCommand('bold', false, null)"><b>F</b> (Fett)</button>
+                <button onclick="document.execCommand('italic', false, null)"><i>K</i> (Kursiv)</button>
+                <button onclick="document.execCommand('underline', false, null)"><u>U</u> (Unterstrichen)</button>
+            </div>
+            <div id="word-editor" contenteditable="true" placeholder="Tippe hier deinen Text ab..."></div>
+            <div style="padding: 10px; background: #ecf0f1; border-top: 1px solid #ccc; display: flex; justify-content: space-between;">
+                <button onclick="checkWordTask()" style="background: #3498db;">Aufgabe abgeben</button>
+                <button onclick="initWord()" style="background: #95a5a6;">Neue Aufgabe</button>
+            </div>
+        </div>
+        <div class="resizer" onmousedown="initResize(event, 'win-word')"></div>
+    </div>
+
+   <div id="win-turtle" class="window" style="width: 500px; left: 200px; top: 150px;">
+<div class="window-header">
+    <span>Turtle Pro</span>
+    <div>
+        <button class="max-btn" onclick="toggleMaximize('win-turtle')">▢</button>
+        <button class="close-btn" onclick="closeWindow('win-turtle')">X</button>
+    </div>
+</div>
+        <div class="window-content">
+            <canvas id="turtle-canvas" width="460" height="300" style="background: #fff;"></canvas>
+            <div id="turtle-controls">
+                <input type="text" id="turtle-input" placeholder="fd 50, rt 90, color blue...">
+                <button onclick="runTurtle()">Ausführen</button>
+            </div>
+            <div style="font-size: 11px; margin-top: 5px; color: #666;">
+                Befehle: <b>fd</b> (vor), <b>bk</b> (zurück), <b>rt</b> (rechts), <b>lt</b> (links), <b>color</b> [farbe], <b>clear</b>
+            </div>
+			<div class="resizer" onmousedown="initResize(event, 'win-turtle')"></div>
+        </div>
+    </div>
+
+<div id="win-browser" class="window" style="width: 800px; height: 600px; left: 100px; top: 50px;">
+        <div class="window-header">
+            <span>Browser Pro</span>
+            <div>
+                <button class="max-btn" onclick="toggleMaximize('win-browser')">▢</button>
+                <button class="close-btn" onclick="closeWindow('win-browser')">X</button>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 0;">
+            <iframe src="https://goethegymnasium.com/" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+        <div class="resizer" onmousedown="initResize(event, 'win-browser')"></div>
+    </div>
+
+    <div id="win-files" class="window" style="width: 600px; left: 300px; top: 100px;">
+        <div class="window-header">
+            <span>Files Explorer Game</span>
+            <div>
+                <button class="max-btn" onclick="toggleMaximize('win-files')">▢</button>
+                <button class="close-btn" onclick="closeWindow('win-files')">X</button>
+            </div>
+        </div>
+        <div class="window-content" style="padding: 0; display: flex; flex-direction: column; height: 100%;">
+            <div id="game-task-area" class="game-task">
+                Lade Aufgabe...
+            </div>
+            
+            <div class="explorer-container">
+                <div class="explorer-top" id="explorer-main">
+                    <div class="breadcrumb" id="current-path-display">root/</div>
+                    <div class="controls-bar">
+                        <input type="text" id="new-item-name" placeholder="Name..." style="flex:1">
+                        <button onclick="createInCurrent('folder')">📁+ Ordner</button>
+                        <button onclick="goUp()" style="background:#95a5a6">⬅ Zurück</button>
+                    </div>
+                    <div id="explorer-icons-view">
+                        </div>
+                </div>
+
+                <div class="explorer-bottom">
+                    <strong>Struktur-Vorschau:</strong>
+                    <div id="file-tree-display" style="white-space: pre;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="resizer" onmousedown="initResize(event, 'win-files')"></div>
+    </div>	
+        </div>
+
+    </div>
+    </div>
+        </div>
+    </div>
+
+<div id="taskbar">
+    <div>
+        <b>Goethe-OS 2026</b> &nbsp; | &nbsp; <span id="clock">00:00</span>
+    </div>
+    <span style="color: #444; font-weight: bold;">GGA 11</span>
+	</div>
+
+<script>
+    // --- Window Management ---
+function openWindow(id) {
+        document.getElementById(id).style.display = 'flex';
+        if(id === 'win-tetris') startTetris();
+        if(id === 'win-snake') startSnake();
+        if(id === 'win-turtle') initTurtle();
+        if(id === 'win-word') initWord();
+    }
+    function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+
+    // Uhrzeit
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById('clock').innerText = d.getHours().toString().padStart(2, '0') + ":" + d.getMinutes().toString().padStart(2, '0');
+    }, 1000);
+
+// --- WORD PRO LOGIC ---
+    let currentWordTask = null;
+    const wordTasks = [
+        {
+            text: "Das Goethe-Gymnasium Auerbach ist eine traditionsreiche Schule im Vogtland.",
+            instruction: "Schreibe den Text ab. Formatiere 'Goethe-Gymnasium Auerbach' fett (F).",
+            check: (html) => (html.includes('<b>Goethe-Gymnasium Auerbach</b>') || html.includes('<strong>Goethe-Gymnasium Auerbach</strong>')) && html.includes('traditionsreiche Schule im Vogtland.')
+        },
+        {
+            text: "Unser Informatikunterricht findet im neu ausgestatteten Computerkabinett statt.",
+            instruction: "Schreibe den Text ab. Formatiere 'Informatikunterricht' kursiv (K).",
+            check: (html) => (html.includes('<i>Informatikunterricht</i>') || html.includes('<em>Informatikunterricht</em>')) && html.includes('Computerkabinett')
+        },
+        {
+            text: "Die Sternwarte des Gymnasiums ist ein echtes Highlight für alle Schüler.",
+            instruction: "Schreibe den Text ab. Formatiere 'Sternwarte' unterstrichen (U) und 'Highlight' fett (F).",
+            check: (html) => html.includes('<u>Sternwarte</u>') && (html.includes('<b>Highlight</b>') || html.includes('<strong>Highlight</strong>'))
+        }
+    ];
+
+    function initWord() {
+        currentWordTask = wordTasks[Math.floor(Math.random() * wordTasks.length)];
+        document.getElementById('word-task-area').innerHTML = `🎯 <b>Aufgabe:</b> ${currentWordTask.instruction}<br><br><i>Vorlage: "${currentWordTask.text}"</i>`;
+        document.getElementById('word-editor').innerHTML = "";
+        document.getElementById('word-task-area').style.background = "#fff9c4";
+    }
+
+    function checkWordTask() {
+        if (!currentWordTask) return;
+        const editorHtml = document.getElementById('word-editor').innerHTML;
+        
+        if (currentWordTask.check(editorHtml)) {
+            document.getElementById('word-task-area').innerHTML = "🎉 <b>Perfekt!</b> Du hast den Text richtig formatiert und abgeschrieben!";
+            document.getElementById('word-task-area').style.background = "#c8e6c9";
+        } else {
+            alert("Das stimmt noch nicht ganz. Kontrolliere die Rechtschreibung und die Formatierungen (Fett, Kursiv, Unterstrichen) genau wie in der Aufgabe verlangt.");
+        }
+    }
+
+// --- TETRIS LOGIC (UPDATED WITH SCORE & GAME OVER) ---
+    let tetrisGame;
+    function startTetris() {
+        const canvas = document.getElementById('tetris-canvas');
+        const ctx = canvas.getContext('2d');
+        const COLS = 10, ROWS = 20, SIZE = 20;
+        let score = 0;
+        let highScore = localStorage.getItem('tetrisHigh') || 0;
+        let isGameOver = false;
+        
+        document.getElementById('tetris-high').innerText = "High: " + highScore;
+        document.getElementById('tetris-score').innerText = "Score: " + score;
+
+        const SHAPES = [
+            [[1, 1, 1, 1]], [[1, 1, 1], [0, 1, 0]], [[1, 1, 1], [1, 0, 0]], [[1, 1, 1], [0, 0, 1]],
+            [[1, 1], [1, 1]], [[1, 1, 0], [0, 1, 1]], [[0, 1, 1], [1, 1, 0]]
+        ];
+
+        let board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+        let piece = createPiece();
+
+        function createPiece() {
+            const shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+            return { pos: {x: 3, y: 0}, matrix: shape };
+        }
+
+        function rotate(matrix) { return matrix[0].map((_, i) => matrix.map(row => row[i]).reverse()); }
+
+        function draw() {
+            ctx.fillStyle = '#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            board.forEach((row, y) => row.forEach((val, x) => {
+                if(val) { ctx.fillStyle = '#3498db'; ctx.fillRect(x*SIZE, y*SIZE, SIZE-1, SIZE-1); }
+            }));
+            piece.matrix.forEach((row, y) => row.forEach((val, x) => {
+                if(val) { ctx.fillStyle = '#e74c3c'; ctx.fillRect((piece.pos.x+x)*SIZE, (piece.pos.y+y)*SIZE, SIZE-1, SIZE-1); }
+            }));
+            
+            if (isGameOver) {
+                ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+                ctx.fillStyle = 'white'; ctx.font = '20px Arial'; ctx.textAlign = 'center';
+                ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2);
+                ctx.font = '12px Arial'; ctx.fillText('Enter drücken für Neustart', canvas.width/2, canvas.height/2 + 25);
+            }
+        }
+
+        function collide(p) {
+            return p.matrix.some((row, y) => row.some((val, x) => {
+                return val !== 0 && (board[p.pos.y + y] && board[p.pos.y + y][p.pos.x + x]) !== 0;
+            }));
+        }
+
+        function merge() {
+            piece.matrix.forEach((row, y) => row.forEach((val, x) => {
+                if(val) board[piece.pos.y+y][piece.pos.x+x] = 1;
+            }));
+            
+            let linesCleared = 0;
+            board = board.filter(row => {
+                let full = row.every(v => v !== 0);
+                if(full) linesCleared++;
+                return !full;
+            });
+            while(board.length < ROWS) board.unshift(Array(COLS).fill(0));
+            
+            if(linesCleared > 0) {
+                score += linesCleared * 100;
+                document.getElementById('tetris-score').innerText = "Score: " + score;
+            }
+        }
+
+        function drop() {
+            if(isGameOver) return;
+            piece.pos.y++;
+            if(collide(piece)) {
+                piece.pos.y--;
+                merge();
+                piece = createPiece();
+                if(collide(piece)) {
+                    isGameOver = true;
+                    if(score > highScore) {
+                        highScore = score;
+                        localStorage.setItem('tetrisHigh', highScore);
+                        document.getElementById('tetris-high').innerText = "High: " + highScore;
+                    }
+                }
+            }
+            draw();
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if(document.getElementById('win-tetris').style.display === 'none') return;
+            if(isGameOver && e.key === 'Enter') { startTetris(); return; }
+            if(isGameOver) return;
+            
+            if(e.key === "ArrowLeft") { piece.pos.x--; if(collide(piece)) piece.pos.x++; }
+            if(e.key === "ArrowRight") { piece.pos.x++; if(collide(piece)) piece.pos.x--; }
+            if(e.key === "ArrowDown") drop();
+            if(e.key === "ArrowUp") { 
+                const old = piece.matrix;
+                piece.matrix = rotate(piece.matrix);
+                if(collide(piece)) piece.matrix = old;
+            }
+            draw();
+        });
+
+        if(tetrisGame) clearInterval(tetrisGame);
+        tetrisGame = setInterval(drop, 500);
+    }
+
+    // --- SNAKE LOGIC (UPDATED WITH SCORE & GAME OVER) ---
+    let snakeGame;
+    function startSnake() {
+        const canvas = document.getElementById('snake-canvas');
+        const ctx = canvas.getContext('2d');
+        const SIZE = 20, GRID = 15;
+        let snake = [{x: 7, y: 7}], food = {x: 3, y: 3}, dx = 1, dy = 0;
+        let nextDx = 1, nextDy = 0;
+        let score = 0;
+        let highScore = localStorage.getItem('snakeHigh') || 0;
+        let isGameOver = false;
+
+        document.getElementById('snake-high').innerText = "High: " + highScore;
+        document.getElementById('snake-score').innerText = "Score: " + score;
+
+        function step() {
+            if(isGameOver) return;
+            dx = nextDx; dy = nextDy;
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+            if(head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID || snake.some(s => s.x === head.x && s.y === head.y)) {
+                isGameOver = true;
+                if(score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('snakeHigh', highScore);
+                    document.getElementById('snake-high').innerText = "High: " + highScore;
+                }
+                drawGameOver();
+                return;
+            }
+
+            snake.unshift(head);
+            if(head.x === food.x && head.y === food.y) {
+                score += 10;
+                document.getElementById('snake-score').innerText = "Score: " + score;
+                food = {x: Math.floor(Math.random()*GRID), y: Math.floor(Math.random()*GRID)};
+            } else { snake.pop(); }
+
+            ctx.fillStyle = '#000'; ctx.fillRect(0,0,300,300);
+            ctx.fillStyle = '#2ecc71'; snake.forEach(s => ctx.fillRect(s.x*SIZE, s.y*SIZE, SIZE-1, SIZE-1));
+            ctx.fillStyle = '#e74c3c'; ctx.fillRect(food.x*SIZE, food.y*SIZE, SIZE-1, SIZE-1);
+        }
+
+        function drawGameOver() {
+            ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(0,0,300,300);
+            ctx.fillStyle = 'white'; ctx.font = '30px Arial'; ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER', 150, 140);
+            ctx.font = '14px Arial'; ctx.fillText('Enter drücken für Neustart', 150, 170);
+        }
+
+        document.addEventListener('keydown', e => {
+            if(document.getElementById('win-snake').style.display === 'none') return;
+            if(isGameOver && e.key === 'Enter') { startSnake(); return; }
+            if(isGameOver) return;
+            
+            if(e.key === "ArrowUp" && dy === 0) { nextDx = 0; nextDy = -1; }
+            if(e.key === "ArrowDown" && dy === 0) { nextDx = 0; nextDy = 1; }
+            if(e.key === "ArrowLeft" && dx === 0) { nextDx = -1; nextDy = 0; }
+            if(e.key === "ArrowRight" && dx === 0) { nextDx = 1; nextDy = 0; }
+        });
+
+        if(snakeGame) clearInterval(snakeGame);
+        snakeGame = setInterval(step, 150); // Etwas schneller gemacht für mehr Spaß
+    }
+
+    // --- TURTLE LOGIC (FIXED) ---
+    let tPos, tAngle, tCtx, tCanvas;
+    function initTurtle() {
+        tCanvas = document.getElementById('turtle-canvas');
+        tCtx = tCanvas.getContext('2d');
+        tPos = { x: tCanvas.width/2, y: tCanvas.height/2 };
+        tAngle = 0;
+        tCtx.strokeStyle = "black";
+        tCtx.lineWidth = 2;
+        drawTurtleMarker();
+    }
+
+    function drawTurtleMarker() {
+        tCtx.fillStyle = "green";
+        tCtx.beginPath();
+        tCtx.arc(tPos.x, tPos.y, 4, 0, Math.PI*2);
+        tCtx.fill();
+    }
+
+    function runTurtle() {
+        const input = document.getElementById('turtle-input').value.toLowerCase();
+        const args = input.split(' ');
+        const cmd = args[0];
+        const val = parseInt(args[1]);
+
+        tCtx.beginPath();
+        tCtx.moveTo(tPos.x, tPos.y);
+
+        switch(cmd) {
+            case 'fd':
+                tPos.x += Math.cos(tAngle * Math.PI / 180) * val;
+                tPos.y += Math.sin(tAngle * Math.PI / 180) * val;
+                tCtx.lineTo(tPos.x, tPos.y);
+                break;
+            case 'bk':
+                tPos.x -= Math.cos(tAngle * Math.PI / 180) * val;
+                tPos.y -= Math.sin(tAngle * Math.PI / 180) * val;
+                tCtx.lineTo(tPos.x, tPos.y);
+                break;
+            case 'rt':
+                tAngle += val;
+                break;
+            case 'lt':
+                tAngle -= val;
+                break;
+            case 'color':
+                tCtx.strokeStyle = args[1] || "black";
+                break;
+            case 'clear':
+                tCtx.clearRect(0, 0, tCanvas.width, tCanvas.height);
+                initTurtle();
+                return;
+        }
+        tCtx.stroke();
+        drawTurtleMarker();
+    }
+	
+	// --- ERWEITERTE FILE-EXPLORER LOGIK ---
+
+let fsData = { name: "root", children: [], type: "folder" };
+let currentFolder = fsData;
+let folderStack = [fsData]; // Für die "Zurück"-Navigation
+let currentTaskObj = null; // Speichert das aktuelle Aufgaben-Objekt
+
+// 1. Definition der komplexen Schul-Aufgaben
+const gameTasks = [
+    {
+        title: "Neues Schuljahr",
+        tree: {
+            "Mathe": { "Hausaufgaben": {}, "Klausuren": {} },
+            "Deutsch": { "Lektuere": {}, "Referate": {} }
+        }
+    },
+    {
+        title: "Projektwoche",
+        tree: {
+            "Projekte": {
+                "Informatik": { "Code": {}, "Assets": {} },
+                "Kunst": { "Skizzen": {} }
+            }
+        }
+    },
+    {
+        title: "Abitur 2027",
+        tree: {
+            "Abi_2027": {
+                "Lernzettel": { "Bio": {}, "Geschichte": {}, "Englisch": {} },
+                "Alte_Pruefungen": {}
+            }
+        }
+    },
+    {
+        title: "Das große Chaos",
+        tree: {
+            "Schule": {
+                "Naturwissenschaften": { "Physik": {}, "Chemie": {} },
+                "Sprachen": { "Französisch": {}, "Latein": {} },
+                "Orga": { "Stundenplaene": {}, "Entschuldigungen": {} }
+            }
+        }
+    }
+
+];
+
+// 2. Initialisierung & Spiel-Logik
+function initExplorerGame() {
+    generateNewTask();
+    renderExplorer();
+}
+
+function generateNewTask() {
+    // Wähle eine zufällige Aufgabe
+    currentTaskObj = gameTasks[Math.floor(Math.random() * gameTasks.length)];
+    
+    // Generiere den Text für die Anzeige
+    let taskHtml = `🎯 <b>Aufgabe: ${currentTaskObj.title}</b><br><span style="font-size:11px;">Baue exakt diese Struktur im 'root'-Ordner nach:</span><br>`;
+    taskHtml += `<pre style="font-size: 11px; margin: 5px 0; background: #fff; padding: 5px; border: 1px solid #ccc; max-height: 80px; overflow-y: auto;">${generateTargetTreeText(currentTaskObj.tree, 0)}</pre>`;
+    
+    document.getElementById('game-task-area').innerHTML = taskHtml;
+}
+
+// Hilfsfunktion: Zeichnet den Baum für die Aufgabenstellung
+function generateTargetTreeText(treeObj, depth) {
+    let text = "";
+    let indent = "  ".repeat(depth);
+    for (let key in treeObj) {
+        text += indent + (depth > 0 ? "└── " : "") + key + "/\n";
+        text += generateTargetTreeText(treeObj[key], depth + 1);
+    }
+    return text;
+}
+
+// 3. Erstellen & Navigieren
+function createInCurrent(type) {
+    const nameInput = document.getElementById('new-item-name');
+    const name = nameInput.value.trim();
+    if(!name) return;
+
+    if(currentFolder.children.find(c => c.name === name)) {
+        alert("Name existiert bereits!");
+        return;
+    }
+
+    const newNode = { name: name, children: [], type: type, parent: currentFolder };
+    currentFolder.children.push(newNode);
+    nameInput.value = "";
+    renderExplorer();
+    checkWinCondition();
+}
+
+function openFolder(name) {
+    const target = currentFolder.children.find(c => c.name === name && c.type === 'folder');
+    if(target) {
+        folderStack.push(target);
+        currentFolder = target;
+        renderExplorer();
+    }
+}
+
+function goUp() {
+    if(folderStack.length > 1) {
+        folderStack.pop();
+        currentFolder = folderStack[folderStack.length - 1];
+        renderExplorer();
+    }
+}
+
+// 4. Rendering (Bleibt wie vorher)
+function renderExplorer() {
+    const view = document.getElementById('explorer-icons-view');
+    view.innerHTML = "";
+    
+    currentFolder.children.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "file-item";
+        div.onclick = () => openFolder(item.name);
+        div.innerHTML = `<span class="file-icon">${item.type === 'folder' ? '📁' : '📄'}</span>
+                         <span class="file-name">${item.name}</span>`;
+        view.appendChild(div);
+    });
+
+    const pathNames = folderStack.map(f => f.name);
+    document.getElementById('current-path-display').innerText = pathNames.join(" / ") + " /";
+    document.getElementById('file-tree-display').innerText = generateTreeText(fsData, 0);
+}
+
+function generateTreeText(node, depth) {
+    let indent = "  ".repeat(depth);
+    let text = indent + (depth > 0 ? "└── " : "") + node.name + (node.type === 'folder' ? "/" : "") + "\n";
+    node.children.forEach(child => {
+        text += generateTreeText(child, depth + 1);
+    });
+    return text;
+}
+
+// 5. Komplexe Gewinnprüfung
+function checkWinCondition() {
+    if (!currentTaskObj) return;
+
+    // Wir prüfen rekursiv, ob der Baum des Spielers die Vorgabe erfüllt
+    const isMatch = compareTrees(currentTaskObj.tree, fsData.children);
+
+    if(isMatch) {
+        document.getElementById('game-task-area').innerHTML = "🎉 <b>Klasse!</b> Schul-Struktur perfekt organisiert! <button onclick='resetGame()' style='margin-left:10px;'>Nächste Aufgabe?</button>";
+        document.getElementById('game-task-area').style.background = "#c8e6c9";
+    }
+}
+
+// Vergleicht den geforderten Baum mit den gebauten Ordnern
+function compareTrees(targetTree, userChildren) {
+    for (let key in targetTree) {
+        // Suche den Ordner auf dieser Ebene
+        let userNode = userChildren.find(c => c.name === key && c.type === 'folder');
+        
+        // Wenn der Ordner fehlt, ist die Aufgabe noch nicht erfüllt
+        if (!userNode) return false; 
+        
+        // Wenn der Ordner da ist, prüfe auch alle seine Unterordner
+        let subMatch = compareTrees(targetTree[key], userNode.children);
+        if (!subMatch) return false;
+    }
+    return true; // Alle geforderten Ordner auf dieser Ebene wurden gefunden!
+}
+
+function openFolder(name) {
+    const target = currentFolder.children.find(c => c.name === name && c.type === 'folder');
+    if(target) {
+        folderStack.push(target);
+        currentFolder = target;
+        renderExplorer();
+    }
+}
+
+function goUp() {
+    if(folderStack.length > 1) {
+        folderStack.pop();
+        currentFolder = folderStack[folderStack.length - 1];
+        renderExplorer();
+    }
+}
+
+// 3. Rendering
+function renderExplorer() {
+    // Icons oben zeichnen
+    const view = document.getElementById('explorer-icons-view');
+    view.innerHTML = "";
+    
+    currentFolder.children.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "file-item";
+        div.onclick = () => openFolder(item.name);
+        div.innerHTML = `<span class="file-icon">${item.type === 'folder' ? '📁' : '📄'}</span>
+                         <span class="file-name">${item.name}</span>`;
+        view.appendChild(div);
+    });
+
+    // Pfad oben aktualisieren
+    const pathNames = folderStack.map(f => f.name);
+    document.getElementById('current-path-display').innerText = pathNames.join(" / ") + " /";
+
+    // Baumstruktur unten zeichnen (rekursiv)
+    document.getElementById('file-tree-display').innerText = generateTreeText(fsData, 0);
+}
+
+function generateTreeText(node, depth) {
+    let indent = "  ".repeat(depth);
+    let text = indent + (depth > 0 ? "└── " : "") + node.name + (node.type === 'folder' ? "/" : "") + "\n";
+    node.children.forEach(child => {
+        text += generateTreeText(child, depth + 1);
+    });
+    return text;
+}
+
+// 4. Gewinnprüfung
+function checkWinCondition() {
+    // Einfache Prüfung: Existiert der Zielpfad in der Datenstruktur?
+    const parts = currentTask.split('/');
+    let temp = fsData;
+    let success = true;
+
+    for(let part of parts) {
+        let found = temp.children.find(c => c.name === part && c.type === 'folder');
+        if(found) {
+            temp = found;
+        } else {
+            success = false;
+            break;
+        }
+    }
+
+    if(success) {
+        document.getElementById('game-task-area').innerHTML = "🎉 <b>Super!</b> Aufgabe gelöst! <button onclick='resetGame()'>Nächste?</button>";
+        document.getElementById('game-task-area').style.background = "#c8e6c9";
+    }
+}
+
+function resetGame() {
+    fsData = { name: "root", children: [], type: "folder" };
+    currentFolder = fsData;
+    folderStack = [fsData];
+    document.getElementById('game-task-area').style.background = "#fff9c4";
+    initExplorerGame();
+}
+
+// Starte das Spiel wenn das Fenster geöffnet wird
+const originalOpenWindow = openWindow;
+openWindow = function(id) {
+    originalOpenWindow(id);
+    if(id === 'win-files') initExplorerGame();
+}
+	
+// --- Fenster-Logik: Maximieren & BESSERES Resize ---
+    function toggleMaximize(id) {
+        const win = document.getElementById(id);
+        win.classList.toggle('maximized');
+    }
+
+    function initResize(e, id) {
+        e.preventDefault();
+        e.stopPropagation();
+        const win = document.getElementById(id);
+        const startWidth = win.offsetWidth;
+        const startHeight = win.offsetHeight;
+        const startX = e.clientX;
+        const startY = e.clientY;
+
+        function doResize(ev) {
+            // Verhindern, dass Fenster zu klein werden
+            const newWidth = Math.max(250, startWidth + ev.clientX - startX);
+            const newHeight = Math.max(200, startHeight + ev.clientY - startY);
+            win.style.width = newWidth + 'px';
+            win.style.height = newHeight + 'px';
+        }
+
+        function stopResize() {
+            window.removeEventListener('mousemove', doResize);
+            window.removeEventListener('mouseup', stopResize);
+        }
+
+        window.addEventListener('mousemove', doResize);
+        window.addEventListener('mouseup', stopResize);
+    }
+
+    // Fenster in den Vordergrund holen bei Klick (z-index richtig geschrieben!)
+    document.querySelectorAll('.window').forEach(win => {
+        win.addEventListener('mousedown', () => {
+            document.querySelectorAll('.window').forEach(w => w.style.zIndex = 10);
+            win.style.zIndex = 100;
+        });
+    });
+</script>
+
+</body>
+</html>

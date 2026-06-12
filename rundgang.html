@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D-Rundgang - Goethe-Gymnasium Auerbach</title>
+
+    <style>
+        /* --- 1. GLOBALE EINSTELLUNGEN --- */
+        :root {
+            --goethe-green: #8cae6f;
+            --text-color: #333;
+            --light-grey: #f0f0f0;
+            --white: #ffffff;
+            --border-color: #eee;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Sanftes Scrollen für die ganze Seite */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Abstand zum Header, wenn gescrollt wird */
+#tour-ziel {
+    scroll-margin-top: 200px;
+}
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- 2. HEADER & NAVIGATION --- */
+        header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+        }
+
+        .logo-icon { height: 90px; width: auto; }
+        .school-name { 
+    font-size: 2.0rem; 
+    color: var(--goethe-green); 
+    font-weight: 600; 
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column; /* Stapelt die Texte untereinander */
+}
+
+.school-subtitle { 
+    font-size: 1.1rem; 
+    color: #666; 
+    font-weight: 400; 
+    margin-top: 2px;
+}
+
+        nav { border-top: 1px solid var(--border-color); background: #fff; }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 35px;
+            padding: 12px 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active { color: var(--goethe-green); font-weight: bold; }
+
+        /* --- 3. MOBILE MENÜ --- */
+        .menu-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .bar { height: 3px; width: 100%; background-color: var(--goethe-green); border-radius: 2px; }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--white);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px;
+        }
+
+        .menu-overlay.open { display: flex; }
+
+        .close-icon {
+            position: absolute;
+            right: 20px; top: 35px; width: 30px; height: 30px; cursor: pointer;
+        }
+
+        .cross-line {
+            position: absolute; width: 100%; height: 3px;
+            background-color: var(--goethe-green); top: 50%;
+        }
+
+        .cross-line:nth-child(1) { transform: rotate(45deg); }
+        .cross-line:nth-child(2) { transform: rotate(-45deg); }
+
+        .overlay-item {
+            padding: 20px; text-decoration: none; color: var(--text-color);
+            font-size: 1.5rem; width: 100%; text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* --- 4. INHALT: 3D-RUNDGANG --- */
+        
+        /* DER GRAUE KASTEN (Hintergrund-Sektion) */
+        .intro-section {
+            background-color: var(--light-grey);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .intro-section h1 {
+            color: var(--goethe-green);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .intro-section p {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .btn-start {
+            background-color: var(--goethe-green);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            display: inline-block;
+            transition: opacity 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .btn-start:hover { opacity: 0.8; }
+
+        /* Bereich unter dem grauen Kasten */
+        .content-section {
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .tour-preview-placeholder {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            margin: 20px auto 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .placeholder-icon {
+            width: 150px;
+            opacity: 0.2;
+        }
+
+        .tour-label {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            color: var(--goethe-green);
+            font-weight: 400;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto 60px;
+            background-color: #eee;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #333;
+            color: #aaa;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .menu-toggle { display: flex; }
+            nav { display: none; }
+            .school-name { font-size: 1.4rem; }
+            .logo-icon { height: 60px; }
+            .intro-section h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="menu-overlay" id="menu-overlay">
+        <div class="close-icon" id="menu-close">
+            <div class="cross-line"></div>
+            <div class="cross-line"></div>
+        </div>
+        <a href="index.html" class="overlay-item">Start</a>
+        <a href="rundgang.html" class="overlay-item" style="color: var(--goethe-green); font-weight: bold;" >3D-Rundgang</a>
+        <a href="spiele.html" class="overlay-item">Goethe-Spiele</a>
+        <a href="faecher.html" class="overlay-item" >Über unsere Fächer</a>
+        <a href="ueber uns.html" class="overlay-item">Über uns</a>
+        <a href="projekt.html" class="overlay-item">Unser Projekt</a>
+    </div>
+
+    <header>
+        <div class="header-main">
+            <a href="index.html" class="logo-area">
+    <img src="logo.webp" alt="Wappen" class="logo-icon">
+    <span class="school-name">
+        Digitaler Tag der offenen Tür
+        <span class="school-subtitle">Goethe-Gymnasium Auerbach</span>
+    </span>
+</a>
+            <div class="menu-toggle" id="mobile-menu-trigger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Start</a></li>
+                    <li><a href="rundgang.html" class="active" >3D-Rundgang</a></li>
+                    <li><a href="spiele.html">Goethe-Spiele</a></li>
+                    <li><a href="faecher.html" >Über unsere Fächer</a></li>
+                    <li><a href="ueber uns.html">Über uns</a></li>
+                    <li><a href="projekt.html">Unser Projekt</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="intro-section">
+            <div class="container">
+                <h1>Entdecke unsere Schule in 3D</h1>
+                <p>Tauche ein in unsere Schule und entdecke sie ganz bequem von überall aus. Mit unserem interaktiven 3D-Rundgang erhältst Du spannende und realistische Einblicke in Klassenzimmer, Fachräume und besondere Orte des Schullebens – fast so, als wärst Du selbst vor Ort.</p>
+                <a href="#tour-ziel" class="btn-start">Rundgang starten!</a>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <div class="tour-preview-placeholder" style="border: none; background: transparent;">
+    <img src="mindmap.png" alt="Mindmap 3D-Rundgang Übersicht" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+</div>
+
+                <h2 class="tour-label" id="tour-ziel">3D-Rundgang:</h2>
+
+<div class="video-container" style="height: 600px;">
+    <iframe src="https://app.lumi.education/run/j_a0ti" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+</div>            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Goethe-Gymnasium Auerbach. Alle Rechte vorbehalten. | <a href="Quellenverzeichnis unserer Website.pdf" style="color: #aaa;">Quellenverzeichnis</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const openMenuBtn = document.getElementById('mobile-menu-trigger');
+        const closeMenuBtn = document.getElementById('menu-close');
+        const overlayMenu = document.getElementById('menu-overlay');
+
+        openMenuBtn.addEventListener('click', () => overlayMenu.classList.add('open'));
+        closeMenuBtn.addEventListener('click', () => overlayMenu.classList.remove('open'));
+    </script>
+
+</body>
+</html>

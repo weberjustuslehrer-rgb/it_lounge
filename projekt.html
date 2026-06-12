@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unser Projekt - Goethe-Gymnasium Auerbach</title>
+    <style>
+        /* --- 1. GLOBALE EINSTELLUNGEN --- */
+        :root {
+            --goethe-green: #8cae6f;
+            --text-color: #333;
+            --light-grey: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #eee;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section { padding: 80px 0; }
+        h1, h2, h3 { font-weight: normal; }
+
+        .btn-green {
+            display: inline-block;
+            background-color: var(--goethe-green);
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-green:hover { background-color: #7d9e62; }
+
+        /* --- 2. HEADER & NAVIGATION --- */
+        header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+        }
+
+        .logo-icon { height: 90px; width: auto; }
+        .school-name { 
+            font-size: 2.0rem; 
+            color: var(--goethe-green); 
+            font-weight: 600; 
+            line-height: 1.2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .school-subtitle { 
+            font-size: 1.1rem; 
+            color: #666; 
+            font-weight: 400; 
+            margin-top: 2px;
+        }
+
+        nav { border-top: 1px solid var(--border-color); background: #fff; }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 35px;
+            padding: 12px 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active { color: var(--goethe-green); font-weight: bold; }
+
+        /* --- 3. MOBILE MENÜ (BURGER) --- */
+        .menu-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .bar { height: 3px; width: 100%; background-color: var(--goethe-green); border-radius: 2px; }
+
+        /* --- 4. OVERLAY MENÜ --- */
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--white);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px;
+        }
+
+        .menu-overlay.open { display: flex; }
+
+        .close-icon {
+            position: absolute;
+            right: 20px;
+            top: 35px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .cross-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: var(--goethe-green);
+            top: 50%;
+        }
+
+        .cross-line:nth-child(1) { transform: rotate(45deg); }
+        .cross-line:nth-child(2) { transform: rotate(-45deg); }
+
+        .overlay-item {
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* --- 5. HERO SEKTION --- */
+        .hero {
+            position: relative;
+            height: 550px;
+            background-image: url('schule.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero-content { max-width: 850px; padding: 0 20px; }
+        .hero h1 { font-size: 5rem; margin-bottom: 25px; line-height: 1.25; font-weight: bold; }
+        .hero p { font-size: 1.5rem; margin-bottom: 40px; font-weight: normal; }
+
+        /* --- 6. INHALTS-LAYOUTS --- */
+        .idea-bg {
+            background-color: #f2f2f2;
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+
+        .intro-text-center {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .intro-text-center h2 { font-size: 2.5rem; color: var(--goethe-green); margin-bottom: 30px; }
+        .intro-text-center p { margin-bottom: 20px; color: #666; font-size: 1.05rem; }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .content-box {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); 
+            transition: transform 0.3s ease;
+        }
+
+        .content-box h3 { color: var(--goethe-green); font-size: 1.6rem; margin-bottom: 20px; }
+        .content-box p, .content-box li { color: #444; font-size: 1rem; margin-bottom: 15px; }
+        .content-box ul { list-style: none; padding-left: 0; }
+
+        /* --- 7. GRÜNER FOOTER-BLOCK --- */
+        .cta-block {
+            background-color: var(--goethe-green);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            margin-top: 60px;
+        }
+
+        .cta-block img {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-block h2 { font-size: 2.2rem; margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .cta-block p { font-size: 1.1rem; margin-bottom: 30px; opacity: 0.9; }
+
+        .btn-white { background-color: white; color: var(--goethe-green); font-weight: bold; }
+
+        footer {
+            background-color: #333;
+            color: #aaa;
+            padding: 40px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* --- 8. RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .menu-toggle { display: flex; }
+            nav { display: none; } /* Versteckt die Reiterleiste mobil */
+            .school-name { font-size: 1.5rem; }
+            .logo-icon { height: 60px; }
+            .grid-layout { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+
+/* --- NEUES ZEBRA GRID SYSTEM --- */
+.content-grid-section { 
+    width: 100%;
+    margin-top: 0; /* Abstand wird durch das Padding der vorigen Sektion/Container geregelt */
+    padding-bottom: 80px;
+}
+
+/* Die neue Überschrift im grauen Bereich */
+.grid-header {
+    background-color: #e8e8e8;
+    text-align: center;
+    padding: 60px 20px 20px 20px; /* Gleicher Einzug wie oben */
+}
+
+.grid-header h2 {
+    font-size: 2.5rem;
+    color: var(--goethe-green);
+    font-weight: normal;
+}
+
+.grid-row {
+    display: flex;
+    width: 100%;
+    min-height: 500px;
+    align-items: stretch;
+}
+
+/* Jede zweite Reihe umdrehen */
+.grid-row:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.grid-image, .grid-text {
+    flex: 0 0 50%;
+    width: 50%;
+}
+
+.grid-image {
+    overflow: hidden;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.grid-text {
+    padding: 5% 8%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #ffffff; /* Grauer Hintergrund wie gewünscht */
+}
+
+.grid-row h3 {
+    color: var(--text-color);
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.grid-row p {
+    color: #666;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Responsive Anpassung für Mobilgeräte */
+@media (max-width: 900px) {
+    .grid-row, .grid-row:nth-child(even) { 
+        flex-direction: column !important; 
+    }
+    .grid-image, .grid-text { 
+        width: 100%; 
+    }
+    .grid-image { height: 300px; }
+    .grid-text { padding: 40px 20px; text-align: center; }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="close-icon" id="menu-close">
+            <div class="cross-line"></div>
+            <div class="cross-line"></div>
+        </div>
+        <a href="index.html" class="overlay-item">Start</a>
+        <a href="rundgang.html" class="overlay-item">3D-Rundgang</a>
+        <a href="spiele.html" class="overlay-item">Goethe-Spiele</a>
+        <a href="faecher.html" class="overlay-item">Über unsere Fächer</a>
+        <a href="ueber uns.html" class="overlay-item">Über uns</a>
+        <a href="projekt.html" class="overlay-item" style="color: var(--goethe-green); font-weight: bold;">Unser Projekt</a>
+    </div>
+
+    <header>
+        <div class="header-main">
+            <a href="index.html" class="logo-area">
+                <img src="logo.webp" alt="Wappen" class="logo-icon">
+                <span class="school-name">
+                    Digitaler Tag der offenen Tür
+                    <span class="school-subtitle">Goethe-Gymnasium Auerbach</span>
+                </span>
+            </a>
+            <div class="menu-toggle" id="mobile-menu-trigger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Start</a></li>
+                    <li><a href="rundgang.html">3D-Rundgang</a></li>
+                    <li><a href="spiele.html">Goethe-Spiele</a></li>
+                    <li><a href="faecher.html">Über unsere Fächer</a></li>
+                    <li><a href="ueber uns.html">Über uns</a></li>
+                    <li><a href="projekt.html" class="active">Unser Projekt</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Schule neu gedacht <br>– digital und nachhaltig –</h1>
+            <p>Erlebe unsere Schule jederzeit und überall</p>
+            <a href="index.html" class="btn-green">Projekt entdecken</a>
+        </div>
+    </section>
+
+    <div class="idea-bg">
+        <div class="container">
+            <section style="padding: 0;">
+                <div class="intro-text-center">
+                    <h2>Unsere Idee</h2>
+                    <p>Unsere Vision ist es, Schule neu zu denken: moderner, nachhaltiger und für alle zugänglich.</p> 
+                    <p>Mit unserer digitalen Website ermöglichen wir es, unsere Schule unabhängig von Zeit und Ort zu entdecken – ganz ohne Anfahrtswege oder Papierverbrauch.</p>
+                    <p>Im Mittelpunkt steht dabei die Verbindung von Digitalisierung und Nachhaltigkeit. Durch innovative Technologien schaffen wir eine umweltfreundliche Alternative zum klassischen Tag der offenen Tür und leisten gleichzeitig einen Beitrag zu einem zukunftsorientierten Schulkonzept.</p>
+                    <p>Mit dem gezielten EInsatz von Künstlicher Intelligenz schaffen wir eine innovative Lösung, die Bildung und Nachhaltigkeit miteinander verbindet.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="grid-layout">
+            <div class="content-box">
+                <h3>Unsere Problemstellung</h3>
+                <p>Der klassische Tag der offenen Tür bringt einige Herausforderungen mit sich:</p>
+                <ul>
+                    <li> - Viele Besucher müssen zur Schule anreisen, was Zeit kostet und zusätzliche CO₂-Emissionen verursacht.</li>
+                    <li> - Gleichzeitig werden große Mengen an Flyern und Informationsmaterialien gedruckt, die oft nur einmal genutzt und anschließend entsorgt werden.</li>
+                    <li> - Außerdem sind Informationen meist nur zu bestimmten Zeiten verfügbar und nicht dauerhaft zugänglich.</li>
+                </ul>
+            </div>
+            <div class="content-box">
+                <h3>Unsere Lösung</h3>
+                <p>Unsere Lösung ist eine digitale Plattform, die alle wichtigen Inhalte rund um unsere Schule an einem Ort vereint.</p>
+                <p>Mit einem interaktiven 3D-Rundgang können Besucherinnen und Besucher die Schule virtuell erkunden und einen realistischen Eindruck gewinnen.</p>
+                <p>Zusätzlich stellen wir alle Informationen zu Fächern, Angeboten und Projekten digital zur Verfügung und ergänzen diese durch interaktive Elemente, die das Entdecken spannender und abwechslungsreicher machen.</p>
+            </div>
+        </div>
+
+        <div class="grid-layout" style="margin-bottom: 60px;">
+            <div class="content-box">
+                <h3>Funktion der Website</h3>
+                <p>Unsere Website bietet verschiedene Möglichkeiten, die Schule aktiv zu erkunden:</p>
+                <ul>
+    <li>
+        <a href="rundgang.html" style="text-decoration: none; color: inherit;">
+            <strong>3D-Rundgang:</strong>
+        </a> <br>
+        Erkunde unsere Schule virtuell und entdecke Klassenzimmer, Fachräume und wichtige Bereiche ganz bequem von zu Hause aus.
+    </li>
+    <li>
+        <a href="faecher.html" style="text-decoration: none; color: inherit;">
+            <strong>Fächer entdecken:</strong>
+        </a> <br>
+        Informiere dich über unsere Fächer, Inhalte und Angebote – übersichtlich und jederzeit abrufbar.
+    </li>
+    <li>
+        <a href="spiele.html" style="text-decoration: none; color: inherit;">
+            <strong>Interaktive Spiele:</strong>
+        </a> <br>
+        Lerne unsere Schule spielerisch kennen und teste dein Wissen durch spannende Aufgaben und kleine Challenges.
+    </li>
+</ul>
+            </div>
+            <div class="content-box">
+                <h3>Umsetzung</h3>
+                <p>Die Umsetzung unseres Projekts begann mit einer intensiven Ideenfindung. Zunächst haben wir verschiedene Ansätze gesammelt, wie Schule moderner und nachhaltiger gestaltet werden kann.<br> Anschließend haben wie diese Ideen mit aktuellen Problemen im Schulalltag verknüpft, wie dem hohen Papierverbrauch und den vielen Anfahrtswegen zum Tag der offenen Tür. Daraus entstand unser Ziel, eine Lösung zu entwickeln, die genau diese Herausforderungen verbessert.</p>
+                <p>Unser Ansatz war es, möglichst viele digitale Inhalte an einem zentralen Ort zusammenzubringen - von Informationen über Fächer bis hin zu interaktiven Elementen und dem virtuellen Rundgang.<br> Auf dieser Grundlage haben wir schließlich unsere Website entwickelt, die all diese Inhalte vereint und eine moderne, nachhaltige Alternative zur klassischen Schülervorstellung bietet.</p>
+            </div>
+        </div>
+    </div>
+
+<div class="grid-header" style="padding: 30px 20px 10px 20px;"> 
+    <h2 style="margin-bottom: 10px;">Gruppenübersicht</h2>
+    
+    <div style="margin-top: 15px; padding-bottom: 15px;">
+        <h3 style="font-size: 1.8rem; color: #333; margin-bottom: 15px; font-weight: normal;">Unser Team</h3>
+        <div style="max-width: 700px; margin: 0 auto;">
+            <img src="team.jpeg" alt="Unser Team" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        </div>
+    </div>
+</div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Interaktiver Rundgang</h3>
+            <p>Erstellen eines 3D-Rundgangs und Quizfragen</p>
+        </div>
+        <div class="grid-image">
+            <img src="rundgang bild.png" alt="Rundgang">
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Spielentwicklung</h3>
+            <p>Interaktive Spiele zu Fächern. <br> (Quizze und Übungen)</p>
+        </div>
+        <div class="grid-image">
+            <iframe src='https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2%3A2PACX-1vTtMy_KtcYGgo9uZgRypTr_trHhuSB8fOXF4qztjGfDGnu9KZQoIPK8IdggSxMzxPd9qtDbZhDEGxkF&font=Default&lang=en&initial_zoom=2&width=100%25&height=650' width='100%' height='500' webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>3D-Modell</h3>
+            <p>Werbeprodukte wie Schlüsselanhänger und Schule mit QR-Code</p>
+        </div>
+        <div class="grid-image">
+            <img src="gruppe3.png" alt="Modelle">
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Marketing</h3>
+            <p>Erstellung von einem Plakat unserer Schule, interaktiver Präsentation und Infoflyern über die Fächer</p>
+        </div>
+        <div class="grid-image">
+            <img src="gruppe4.png" alt="Flyer">
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Koordination</h3>
+            <p>Austausch und Zusammenfügen aller Ergebnisse mittels einer Website und einer Präsentation</p>
+        </div>
+        <div class="grid-image">
+            <img src="gruppe5.png" alt="wir">
+        </div>
+    </div>
+</section>
+
+    <section class="cta-block" style="margin-top: 0;">
+        <div class="container">
+            <img src="schule2.png" alt="Projekt Illustration">
+            <h2>Erlebe unsere Schule jetzt selbst und entdecke alle Inhalte digital.</h2>
+            <p>Starte den 3D-Rundgang | Informiere dich über unsere Fächer | Probiere unsere interaktiven Inhalte aus</p>
+            <a href="index.html" class="btn-green btn-white">Jetzt entdecken!</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Goethe-Gymnasium Auerbach. Alle Rechte vorbehalten. | <a href="Quellenverzeichnis unserer Website.pdf" style="color: #aaa;">Quellenverzeichnis</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const openMenuBtn = document.getElementById('mobile-menu-trigger');
+        const closeMenuBtn = document.getElementById('menu-close');
+        const overlayMenu = document.getElementById('menu-overlay');
+
+        openMenuBtn.addEventListener('click', () => overlayMenu.classList.add('open'));
+        closeMenuBtn.addEventListener('click', () => overlayMenu.classList.remove('open'));
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Über uns - Goethe-Gymnasium Auerbach</title>
+    <style>
+        /* --- 1. GLOBALE EINSTELLUNGEN (VON VORLAGE) --- */
+        :root {
+            --goethe-green: #8cae6f;
+            --text-color: #333;
+            --light-grey: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #eee;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section { padding: 60px 0; }
+        h1, h3 { font-weight: normal; text-align: center; }
+        h2 { font-weight: bold; text-align: center; }
+
+        .btn-green {
+            display: inline-block;
+            background-color: var(--goethe-green);
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-green:hover { background-color: #7d9e62; }
+
+        /* --- 2. HEADER & NAVIGATION --- */
+        header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+        }
+
+        .logo-icon { height: 90px; width: auto; }
+        .school-name { 
+    font-size: 2.0rem; 
+    color: var(--goethe-green); 
+    font-weight: 600; 
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column; /* Stapelt die Texte untereinander */
+}
+
+.school-subtitle { 
+    font-size: 1.1rem; 
+    color: #666; 
+    font-weight: 400; 
+    margin-top: 2px;
+}
+
+        nav { border-top: 1px solid var(--border-color); background: #fff; }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 35px;
+            padding: 12px 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active { color: var(--goethe-green); font-weight: bold; }
+
+        /* --- 3. MOBILE MENÜ --- */
+        .menu-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .bar { height: 3px; width: 100%; background-color: var(--goethe-green); border-radius: 2px; }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--white);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px;
+        }
+
+        .menu-overlay.open { display: flex; }
+
+        .close-icon {
+            position: absolute;
+            right: 20px;
+            top: 35px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .cross-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: var(--goethe-green);
+            top: 50%;
+        }
+
+        .cross-line:nth-child(1) { transform: rotate(45deg); }
+        .cross-line:nth-child(2) { transform: rotate(-45deg); }
+
+        .overlay-item {
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* --- 4. SPEZIFISCHES DESIGN "ÜBER UNS" --- */
+        .about-hero {
+            background-color: var(--goethe-green);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .about-hero h1 { font-size: 2.5rem; margin-bottom: 30px; }
+        
+        .hero-image-container {
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .hero-image-container img {
+            width: 100%;
+            border: 5px solid white;
+            border-radius: 4px;
+        }
+
+        .hero-caption {
+    font-style: italic;
+    font-size: 1.5rem; /* Vorher 0.9rem - jetzt deutlich größer */
+    line-height: 1.4;
+    margin-bottom: 35px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--goethe-green);
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Info-Box Bereich */
+        /* In der .info-section den oberen Abstand verringern */
+.info-section {
+    background-color: #f2f2f2;
+    padding: 20px 20px 40px 20px; /* Von 40px auf 20px oben reduziert */
+    text-align: center;
+    margin-top: -1px;
+}
+
+/* Den Abstand unter der H2 verkleinern */
+.info-section h2 {
+    color: var(--goethe-green);
+    font-weight: bold;
+    font-size: 2.2rem;
+    margin-bottom: 10px !important; /* Von 30px auf 10px reduziert */
+}
+
+#info-bereich {
+    scroll-margin-top: 135px; /* Dieser Wert definiert, wie viel Platz oben frei bleiben soll */
+}
+
+        .info-box {
+            background: #efe9e1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            text-align: left;
+            border-radius: 4px;
+        }
+
+        .info-text h2 { text-align: left; font-size: 2rem; margin-bottom: 10px; color: #333; }
+        .info-text p { margin-bottom: 20px; font-size: 1.1rem; }
+        .info-illustration img { width: 250px; }
+
+        /* Unsere Schule Textbereich */
+        .school-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .school-details h2 { text-align: left; color: var(--goethe-green); margin-bottom: 20px; }
+        .mint-logo { width: 100%; max-width: 400px; height: auto; margin-top: 0px; display: block; }
+
+        /* Ansprechpartner Grid */
+        .team-section { border-top: 1px solid var(--border-color); }
+        .team-section h2 { margin-bottom: 50px; color: var(--goethe-green); font-size: 2rem; }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            background-color: #eee;
+        }
+
+        .team-member h3 { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; }
+        .team-member p { font-size: 0.9rem; color: #777; }
+
+/* Die große Haupt-Überschrift "Für eure Eltern:" */
+.parent-heading {
+    text-align: center;
+    font-weight: bold;
+    color: var(--goethe-green);
+    font-size: 2.4rem; 
+    margin-bottom: 30px;
+    width: 100%;
+    display: block; /* Sicherstellen, dass es eine eigene Zeile einnimmt */
+}
+
+/* Spezifisches Styling für "Unsere Schule" innerhalb der Details */
+.school-details h3.parent-heading {
+    text-align: left !important; /* Erzwingt Linksbündigkeit */
+    font-weight: normal;
+    font-size: 1.8rem !important; /* Größe für die Unter-Überschrift */
+    color: var(--goethe-green);
+    margin-bottom: 15px;
+}
+
+#eltern-bereich {
+    scroll-margin-top: 180px; 
+}
+
+        /* Kontakt Footer Bereich */
+        .contact-footer {
+            background-color: #ffffff;
+            padding: 60px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #aaa;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .menu-toggle { display: flex; }
+            nav { display: none; }
+            .school-name { font-size: 1.5rem; }
+            .logo-icon { height: 60px; }
+            .info-box { flex-direction: column; text-align: center; }
+            .info-text h2 { text-align: center; }
+            .school-details { grid-template-columns: 1fr; }
+        }
+
+.school-details > div:last-child {
+    margin-top: 60px; 
+}
+
+/* Auf Mobilgeräten den Abstand wieder entfernen, 
+   da die Spalten dort untereinander stehen */
+@media (max-width: 900px) {
+    .school-details > div:last-child {
+        margin-top: 0;
+    }
+}
+
+/* Karussell Container */
+
+/* Gemeinsame Container-Einstellungen */
+.carousel-container, .pp-carousel-container {
+    width: 100%;
+    position: relative;
+    margin: 20px auto 40px;
+    overflow: visible; /* Erlaubt Pfeile außen */
+}
+
+.carousel-container { max-width: 400px; }
+.pp-carousel-container { max-width: 750px; }
+
+/* Hier wird das Bild beschnitten */
+.pp-carousel-viewport {
+    display: flex;
+    overflow: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    border-radius: 8px;
+    background: #fff; /* Weißer Hintergrund für die Folien */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1); /* Schatten nur hier */
+}
+
+/* 2. Das untere Karussell (Logos) wird "unsichtbar" */
+#carousel.carousel-viewport {
+    display: flex;
+    overflow: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    background: transparent; /* Kein Hintergrund */
+    box-shadow: none;        /* Kein Schatten */
+    border-radius: 0;        /* Keine Ecken */
+}
+
+.carousel-viewport::-webkit-scrollbar, 
+.pp-carousel-viewport::-webkit-scrollbar { display: none; }
+
+.carousel-item, .pp-carousel-item {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+}
+
+.carousel-item img, .pp-carousel-item img {
+    width: 100%;
+    display: block;
+}
+
+/* Die Pfeile */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--goethe-green);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Neue Positionen AUẞERHALB */
+.prev { left: -60px; }
+.next { right: -60px; }
+
+/* Dots & Responsive */
+.carousel-dots { text-align: center; padding: 10px 0; }
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #ccc;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+}
+.dot.active { background: var(--goethe-green); }
+
+@media (max-width: 950px) {
+    /* Auf schmalen Bildschirmen Pfeile wieder nach innen, sonst sind sie außerhalb des Desktops */
+    .prev { left: 10px; }
+    .next { right: 10px; }
+    .carousel-container, .pp-carousel-container { width: 85%; }
+}
+
+/* --- KONTAKTFORMULAR STYLING --- */
+.contact-form-section {
+    background-color: var(--light-grey);
+    padding: 60px 0;
+}
+
+.form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.form-group input, 
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--goethe-green);
+    box-shadow: 0 0 0 2px rgba(140, 174, 111, 0.2);
+}
+
+.form-submit-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-submit {
+    background-color: var(--goethe-green);
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #7d9e62;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="close-icon" id="menu-close">
+            <div class="cross-line"></div>
+            <div class="cross-line"></div>
+        </div>
+        <a href="index.html" class="overlay-item">Start</a>
+        <a href="rundgang.html" class="overlay-item">3D-Rundgang</a>
+        <a href="spiele.html" class="overlay-item">Goethe-Spiele</a>
+        <a href="faecher.html" class="overlay-item">Über unsere Fächer</a>
+        <a href="ueber uns.html" class="overlay-item" style="color: var(--goethe-green); font-weight: bold;">Über uns</a>
+        <a href="projekt.html" class="overlay-item">Unser Projekt</a>
+    </div>
+
+    <header>
+        <div class="header-main">
+            <a href="index.html" class="logo-area">
+    <img src="logo.webp" alt="Wappen" class="logo-icon">
+    <span class="school-name">
+        Digitaler Tag der offenen Tür
+        <span class="school-subtitle">Goethe-Gymnasium Auerbach</span>
+    </span>
+</a>
+            <div class="menu-toggle" id="mobile-menu-trigger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Start</a></li>
+                    <li><a href="rundgang.html">3D-Rundgang</a></li>
+                    <li><a href="spiele.html">Goethe-Spiele</a></li>
+                    <li><a href="faecher.html">Über unsere Fächer</a></li>
+                    <li><a href="ueber uns.html" class="active">Über uns</a></li>
+                    <li><a href="projekt.html">Unser Projekt</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="about-hero">
+        <div class="container">
+            <h1>Über uns</h1>
+            <div class="hero-image-container">
+                <img src="schule2.png" alt="Goethe-Gymnasium Auerbach Außenansicht">
+            </div>
+            <p class="hero-caption">"Was immer du tun kannst oder wovon du träumst - fang damit an.<br> Mut hat Genie, Kraft und Zauber in sich."<br><small>Johann Wolfgang von Goethe</small></p>
+            <div class="hero-buttons">
+                <a href="#info-bereich" class="btn-white">Los geht´s!<br> für Schüler</a>
+                <a href="#eltern-bereich" class="btn-white">Los geht´s!<br> für Eltern</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="info-section" id="info-bereich">
+    <div class="container">
+        <h2 style="color: var(--goethe-green); font-weight: bold; font-size: 2.2rem; margin-bottom: 30px;">
+            Alles Wichtige für Euch zum Durchklicken
+        </h2>
+        
+        <div class="pp-carousel-container">
+            <div class="pp-carousel-viewport" id="pp-carousel">
+                <div class="pp-carousel-item"><img src="folie1.png" alt="Folie 1"></div>
+                <div class="pp-carousel-item"><img src="folie2.png" alt="Folie 2"></div>
+                <div class="pp-carousel-item"><img src="folie3.png" alt="Folie 3"></div>
+                <div class="pp-carousel-item"><img src="folie4.png" alt="Folie 4"></div>
+                <div class="pp-carousel-item"><img src="folie5.png" alt="Folie 1"></div>
+                <div class="pp-carousel-item"><img src="folie6.png" alt="Folie 2"></div>
+                <div class="pp-carousel-item"><img src="folie7.png" alt="Folie 3"></div>
+                <div class="pp-carousel-item"><img src="folie8.png" alt="Folie 4"></div>
+                <div class="pp-carousel-item"><img src="folie9.png" alt="Folie 1"></div>
+                <div class="pp-carousel-item"><img src="folie10.png" alt="Folie 2"></div>
+                <div class="pp-carousel-item"><img src="folie11.png" alt="Folie 3"></div>
+                <div class="pp-carousel-item"><img src="folie12.png" alt="Folie 4"></div>
+                <div class="pp-carousel-item"><img src="folie13.png" alt="Folie 1"></div>
+                <div class="pp-carousel-item"><img src="folie14.png" alt="Folie 2"></div>
+                </div>
+
+            <button class="carousel-nav prev" id="pp-prevBtn" aria-label="Vorherige Folie">&#10094;</button>
+            <button class="carousel-nav next" id="pp-nextBtn" aria-label="Nächste Folie">&#10095;</button>
+
+            <div class="carousel-dots" id="pp-dots">
+    <span class="dot active" onclick="scrollToPPItem(0)"></span>
+    <span class="dot" onclick="scrollToPPItem(1)"></span>
+    <span class="dot" onclick="scrollToPPItem(2)"></span>
+    <span class="dot" onclick="scrollToPPItem(3)"></span>
+    <span class="dot" onclick="scrollToPPItem(4)"></span>
+    <span class="dot" onclick="scrollToPPItem(5)"></span>
+    <span class="dot" onclick="scrollToPPItem(6)"></span>
+    <span class="dot" onclick="scrollToPPItem(7)"></span>
+    <span class="dot" onclick="scrollToPPItem(8)"></span>
+    <span class="dot" onclick="scrollToPPItem(9)"></span>
+    <span class="dot" onclick="scrollToPPItem(10)"></span>
+    <span class="dot" onclick="scrollToPPItem(11)"></span>
+    <span class="dot" onclick="scrollToPPItem(12)"></span>
+    <span class="dot" onclick="scrollToPPItem(13)"></span>
+</div>
+        </div>
+    </div>
+</section>
+
+    <section>
+        <div class="container">
+            <p id="eltern-bereich" class="parent-heading">Für Eltern:</p>
+            <div class="school-details">
+                <div>
+                    <h3 class="parent-heading" style="text-align: left;">Unsere Schule</h3>
+                    <p>Das Goethe-Gymnasium Auerbach im Vogtland ist ein allgemeinbildendes Gymnasium mit aktuell 523 Schülerinnen und Schülern, die von einem engagierten Team aus 49 Lehrkräften und pädagogischem Personal begleitet werden. Diese lernen in aktuell 24 Klassen und Kursen. Unter der Leitung von Silvia Fehlberg steht unsere Schule für modernes und zukunftsorientiertes Lernen.
+
+Besonders hervorzuheben sind unsere Schwerpunkte in der Berufsorientierung, der Begabungs- und Begabtenförderung sowie in den Naturwissenschaften und der digitalen Bildung. Zahlreiche Auszeichnungen – darunter „Digitale Schule“, „Digitale Schule Sachsen“ und „MINT-freundlich“ – sowie die Teilnahme am Programm „Leistung macht Schule“ unterstreichen unsere Qualität.
+
+Im sprachlichen Bereich bieten wir neben Englisch als erster Fremdsprache Französisch, Spanisch und Latein an. Ab Klasse 8 können Schülerinnen und Schüler zwischen einem naturwissenschaftlichen, sportlichen oder künstlerischen Profil wählen und ihre Interessen gezielt vertiefen.</p>
+
+                    <p style="margin-top: 15px;">In der Sekundarstufe II erweitern innovative Kursangebote wie der einzigartige Grundkurs „Computermathematik“ das Lernen. Dieser verbindet Inhalte aus Informatik und Mathematik praxisnah und projektorientiert – ein Angebot, das in Sachsen in dieser Form einmalig ist.
+
+So schaffen wir eine Lernumgebung, die Wissen, Persönlichkeit und Zukunftsperspektiven gleichermaßen fördert.</p>
+                </div>
+                <div>
+                    <p>Besonderer Wert wird auf einen fachlich fundierten Unterricht gelegt, der moderne Lernformen und Techniken einbezieht. Wir sind stolze Träger der Titel "Digitale Schule", "MINT-freundliche Schule" und "Schule ohne Rassismus - Schule mit Courage" und bieten Bildung mit höchsten Qualitätsstandards.</p>
+                    <p style="margin-top: 15px;">Dabei pflegen wir ein respektvolles Umfeld, das Inklusion und kulturelle Vielfalt fördert und unsere Schülerinnen und Schüler auf eine globale Zukunft vorbereitet.</p>
+                    
+<div class="carousel-container">
+    <div class="carousel-viewport" id="carousel">
+        <div class="carousel-item"><img src="mint.webp" alt="MINT Logo"></div>
+        <div class="carousel-item"><img src="bo.webp" alt="Berufsorientierung"></div>
+        <div class="carousel-item"><img src="leistung.webp" alt="Leistung macht Schule"></div>
+        <div class="carousel-item"><img src="digital.webp" alt="Digitale Schule"></div>
+        <div class="carousel-item"><img src="sachsen.webp" alt="Digitale Schule Sachsen"></div>
+    </div>
+
+    <button class="carousel-nav prev" id="prevBtn" aria-label="Vorheriges Bild">&#10094;</button>
+    <button class="carousel-nav next" id="nextBtn" aria-label="Nächstes Bild">&#10095;</button>
+
+    <div class="carousel-dots" id="dots">
+        <span class="dot active" onclick="scrollToItem(0)"></span>
+        <span class="dot" onclick="scrollToItem(1)"></span>
+        <span class="dot" onclick="scrollToItem(2)"></span>
+        <span class="dot" onclick="scrollToItem(3)"></span>
+        <span class="dot" onclick="scrollToItem(4)"></span>
+    </div>
+</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2>Unsere Ansprechpartner</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="fehlberg.png" alt="Silvia Fehlberg">
+                    <h3>Silvia Fehlberg</h3>
+                    <p>Schulleiterin</p>
+                </div>
+                <div class="team-member">
+                    <img src="lange.png" alt="Jonas Lange">
+                    <h3>Jonas Lange</h3>
+                    <p>Oberstufenberater</p>
+                </div>
+                <div class="team-member">
+                    <img src="fachleiter.png" alt="Team">
+                    <h3>Kathrin Liebold, Norman Kniebel, Claudia Bergholz</h3>
+                    <p>Fachleiter</p>
+                </div>
+                <div class="team-member">
+                    <img src="beratungslehrer.png" alt="Beratung">
+                    <h3>Yvonne Lehmann, Jochen Kühn</h3>
+                    <p>Beratungslehrer</p>
+                </div>
+                <div class="team-member">
+                    <img src="wolfram.png" alt="Ariane Wolfram">
+                    <h3>Ariane Wolfram</h3>
+                    <p>Vertrauenslehrerin</p>
+                </div>
+                <div class="team-member">
+                    <img src="berger.png" alt="Ulrich Berger">
+                    <h3>Ulrich Berger</h3>
+                    <p>Vertrauenslehrer</p>
+                </div>
+                <div class="team-member">
+                    <img src="laura.png" alt="Laura Voigt">
+                    <h3>Laura Voigt</h3>
+                    <p>Schülersprecherin</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="teachers-section" style="padding: 20px 0 60px 0; background-color: #f2f2f2;">
+    <div class="container">
+        <h2 style="color: var(--goethe-green); font-size: 2rem; margin-bottom: 40px; text-align: center;">Unsere Lehrkräfte</h2>
+        
+        <div style="max-width: 700px; margin: -20px auto 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden;">
+            <img src="lehrkraefte.png" alt="Das Kollegium des Goethe-Gymnasiums Auerbach" style="width: 100%; display: block;">
+        </div>
+    </div>
+</section>
+
+   <section class="contact-footer" style="background-color: #ffffff; padding: 60px 0;">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: start;">
+            
+            <div style="text-align: left;">
+                <h2 style="color: var(--goethe-green); text-align: left; font-size: 2.2rem; margin-bottom: 30px;">Kontakt</h2>
+                
+                <p style="margin-bottom: 20px; font-size: 1.1rem; color: #555;">
+                    <strong>Adresse:</strong><br>
+                    Bertolt-Brecht-Straße 1-3<br>
+                    08209 Auerbach/Vogtl.
+                </p>
+
+                <p style="margin-bottom: 20px; font-size: 1.1rem; color: #555;">
+                    <strong>E-Mail:</strong><br>
+                    <a href="mailto:schulleitung@goethe-gymnasium-auerbach.de" style="color: #555; text-decoration: none;">schulleitung@goethe-gymnasium-auerbach.de</a>
+                </p>
+
+                <p style="font-size: 1.1rem; color: #555;">
+                    <strong>Telefon:</strong><br>
+                    <a href="tel:03744212730" style="color: #555; text-decoration: none;">03744 212730</a>
+                </p>
+            </div>
+
+            <div style="box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; height: 350px; width: 100%; justify-self: end;">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2543.68264560155!2d12.394145777174665!3d50.50284487160359!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a718712710f60f%3A0x69680374e2d31295!2sBertolt-Brecht-Stra%C3%9Fe%201%2C%2008209%20Auerbach%2FVogtland!5e0!3m2!1sde!2sde!4v1712040000000!5m2!1sde!2sde" 
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="contact-form-section">
+    <div class="container">
+        <h2 style="color: var(--goethe-green); margin-bottom: 40px; font-size: 2.2rem;">Schreiben Sie uns direkt</h2>
+        
+        <div class="form-container">
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Ihr Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-Mail</label>
+                    <input type="email" id="email" name="email" placeholder="ihre@mail.de" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Betreff</label>
+                    <input type="text" id="subject" name="subject" placeholder="Worum geht es?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Nachricht</label>
+                    <textarea id="message" name="message" placeholder="Ihre Nachricht an uns..." required></textarea>
+                </div>
+                
+                <div class="form-submit-container">
+                    <button type="submit" class="btn-submit">Nachricht absenden</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Goethe-Gymnasium Auerbach. Alle Rechte vorbehalten. | <a href="Quellenverzeichnis unserer Website.pdf" style="color: #aaa;">Quellenverzeichnis</a></p>
+        </div>
+    </footer>
+
+<script>
+   // 1. Variablen definieren
+const openMenuBtn = document.getElementById('mobile-menu-trigger');
+const closeMenuBtn = document.getElementById('menu-close');
+const overlayMenu = document.getElementById('menu-overlay');
+const carousel = document.getElementById('carousel');
+const dots = document.querySelectorAll('.dot');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+// 2. Mobile Menü Logik
+openMenuBtn.addEventListener('click', () => overlayMenu.classList.add('open'));
+closeMenuBtn.addEventListener('click', () => overlayMenu.classList.remove('open'));
+
+// 3. Karussell: Funktion für die Punkte
+function scrollToItem(index) {
+    const width = carousel.offsetWidth;
+    carousel.scrollTo({ left: width * index, behavior: 'smooth' });
+}
+
+// 4. Karussell: Logik für den "Weiter"-Button (Next)
+nextBtn.addEventListener('click', () => {
+    const width = carousel.offsetWidth;
+    // Wenn am Ende, springe zum Anfang
+    if (carousel.scrollLeft + width >= carousel.scrollWidth - 5) {
+        carousel.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+        carousel.scrollBy({ left: width, behavior: 'smooth' });
+    }
+});
+
+// 5. Karussell: Logik für den "Zurück"-Button (Prev)
+prevBtn.addEventListener('click', () => {
+    const width = carousel.offsetWidth;
+    // Wenn am Anfang, springe zum Ende
+    if (carousel.scrollLeft <= 5) {
+        carousel.scrollTo({ left: carousel.scrollWidth, behavior: 'smooth' });
+    } else {
+        carousel.scrollBy({ left: -width, behavior: 'smooth' });
+    }
+});
+
+// 6. Karussell: Punkte automatisch aktualisieren beim Scrollen
+carousel.addEventListener('scroll', () => {
+    const index = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+});
+
+// --- Logik für das PowerPoint-Karussell ---
+const ppCarousel = document.getElementById('pp-carousel');
+const ppDots = document.querySelectorAll('#pp-dots .dot');
+const ppPrevBtn = document.getElementById('pp-prevBtn');
+const ppNextBtn = document.getElementById('pp-nextBtn');
+
+function scrollToPPItem(index) {
+    const width = ppCarousel.offsetWidth;
+    ppCarousel.scrollTo({ left: width * index, behavior: 'smooth' });
+}
+
+ppNextBtn.addEventListener('click', () => {
+    const width = ppCarousel.offsetWidth;
+    if (ppCarousel.scrollLeft + width >= ppCarousel.scrollWidth - 5) {
+        ppCarousel.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+        ppCarousel.scrollBy({ left: width, behavior: 'smooth' });
+    }
+});
+
+ppPrevBtn.addEventListener('click', () => {
+    const width = ppCarousel.offsetWidth;
+    if (ppCarousel.scrollLeft <= 5) {
+        ppCarousel.scrollTo({ left: ppCarousel.scrollWidth, behavior: 'smooth' });
+    } else {
+        ppCarousel.scrollBy({ left: -width, behavior: 'smooth' });
+    }
+});
+
+ppCarousel.addEventListener('scroll', () => {
+    const index = Math.round(ppCarousel.scrollLeft / ppCarousel.offsetWidth);
+    ppDots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+});
+
+</script>
+
+</body>
+</html>

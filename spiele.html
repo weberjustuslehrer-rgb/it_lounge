@@ -1,0 +1,475 @@
+0<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goethe-Spiele - Goethe-Gymnasium Auerbach</title>
+    <style>
+        /* --- 1. GLOBALE EINSTELLUNGEN --- */
+        :root {
+            --goethe-green: #8cae6f;
+            --text-color: #333;
+            --white: #ffffff;
+            --bg-grey: #e8e8e8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 { font-weight: normal; }
+
+
+/* --- 2. HEADER & NAVIGATION --- */
+header {
+    background-color: var(--white);
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0; /* Von 25px auf 20px reduziert wie im Vorbild */
+    position: relative;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+}
+
+.logo-icon { height: 90px; width: auto; }
+
+.school-name { 
+    font-size: 2.0rem; 
+    color: var(--goethe-green); 
+    font-weight: 600; 
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column; 
+}
+
+.school-subtitle { 
+    font-size: 1.1rem; 
+    color: #666; 
+    font-weight: 400; 
+    margin-top: 2px;
+}
+
+nav { border-top: 1px solid #eee; background: #fff; }
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    gap: 35px;
+    padding: 12px 0;
+}
+nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+nav a:hover, nav a.active { color: var(--goethe-green); font-weight: bold; }
+
+/* --- 3. MOBILE MENÜ & OVERLAY (Exakt wie Vorbild) --- */
+.menu-toggle {
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    display: none; flex-direction: column; justify-content: space-between;
+    width: 30px; height: 20px; cursor: pointer; z-index: 10;
+}
+
+.menu-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--white); z-index: 2000; display: none;
+    flex-direction: column; align-items: center; padding-top: 100px;
+}
+.menu-overlay.open { display: flex; }
+
+.close-icon {
+    position: absolute; right: 20px; top: 35px; width: 30px; height: 30px; cursor: pointer;
+}
+.cross-line {
+    position: absolute; width: 100%; height: 3px; background-color: var(--goethe-green); top: 50%;
+}
+.cross-line:nth-child(1) { transform: rotate(45deg); }
+.cross-line:nth-child(2) { transform: rotate(-45deg); }
+
+.overlay-item {
+    padding: 20px; text-decoration: none; color: var(--text-color);
+    font-size: 1.5rem; width: 100%; text-align: center; border-bottom: 1px solid #eee;
+}
+
+/* --- RESPONSIVE ANPASSUNGEN --- */
+@media (max-width: 900px) {
+    .menu-toggle { display: flex; }
+    nav { display: none; }
+    .school-name { font-size: 1.5rem; }
+    .logo-icon { height: 60px; }
+    
+    /* Grid-Anpassung für Mobile */
+    .grid-row, .grid-row:nth-child(even) { 
+        flex-direction: column !important; 
+    }
+    .grid-image, .grid-text { 
+        flex: 0 0 100%; 
+        width: 100%; 
+    }
+    .grid-image { height: 300px; }
+    .grid-text { padding: 40px 20px; text-align: center; }
+}
+
+        .bar { height: 3px; width: 100%; background-color: var(--goethe-green); border-radius: 2px; }
+
+        /* --- 3. INFOBEREICH --- */
+        .intro-full-width-bg {
+            background-color: var(--bg-grey); 
+            padding: 80px 0;
+            text-align: center;
+            width: 100%;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .intro-content-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .intro-content-container h2 {
+            font-size: 2.8rem;
+            color: var(--goethe-green);
+            margin-bottom: 25px;
+        }
+
+        /* --- 4. PERFECT CENTERED GRID (Zebra-Layout) --- */
+        .content-grid-section { 
+            width: 100%;
+        }
+
+        .grid-row {
+            display: flex;
+            width: 100%;
+            min-height: 500px; /* Einheitliche Höhe für die Symmetrie */
+            align-items: stretch; /* Füllt die volle Höhe aus */
+        }
+
+        /* Jede zweite Reihe umdrehen */
+        .grid-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .grid-image, .grid-text {
+            flex: 0 0 50%; /* EXAKT 50% Breite für beide Elemente -> Die Linie bleibt in der Mitte */
+            width: 50%;
+        }
+
+        .grid-image {
+            overflow: hidden;
+            background-color: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .grid-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 'cover' sorgt dafür, dass das Bild den 50%-Bereich komplett füllt */
+        }
+
+        .grid-text {
+            padding: 5% 8%; /* Prozentuales Padding für bessere Skalierung */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--white);
+        }
+
+        .grid-row h3 {
+            color: var(--text-color);
+            font-family: 'Cantarell', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .grid-row p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* --- 5. FOOTER & OVERLAY --- */
+        footer {
+            background-color: #333;
+            color: #aaa;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .menu-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--white); z-index: 2000; display: none;
+            flex-direction: column;
+        }
+        .menu-overlay.open { display: flex; }
+        .close-icon { position: absolute; right: 20px; top: 40px; width: 30px; height: 20px; cursor: pointer; }
+        .cross-line { position: absolute; width: 100%; height: 3px; background-color: var(--goethe-green); }
+        .cross-line:nth-child(1) { transform: rotate(45deg); }
+        .cross-line:nth-child(2) { transform: rotate(-45deg); }
+        .overlay-nav { display: flex; flex-direction: column; align-items: center; padding-top: 100px; }
+        .overlay-item { width: 100%; padding: 20px 0; text-decoration: none; color: #666; font-size: 1.3rem; text-align: center; border-bottom: 1px solid #eee; }
+
+/* --- Styling für die neuen Buttons --- */
+.game-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 30px;
+    background-color: var(--goethe-green);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    transition: background-color 0.3s, transform 0.2s;
+    align-self: flex-start; /* Verhindert, dass der Button die volle Breite einnimmt */
+}
+
+.game-button:hover {
+    background-color: #7a9a5f; /* Ein etwas dunkleres Grün für den Hover-Effekt */
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* --- Styling für die Bild-Links --- */
+.grid-image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.grid-image img {
+    transition: transform 0.5s ease;
+}
+
+.grid-image a:hover img {
+    transform: scale(1.05); /* Leichter Zoom-Effekt beim Drüberfahren mit der Maus */
+}
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .grid-row, .grid-row:nth-child(even) { 
+                flex-direction: column !important; 
+            }
+            .grid-image, .grid-text { 
+                flex: 0 0 100%; 
+                width: 100%; 
+            }
+            .grid-image { height: 300px; }
+            .grid-text { padding: 40px 20px; text-align: center; }
+            .school-name { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="close-icon" id="menu-close">
+            <div class="cross-line"></div>
+            <div class="cross-line"></div>
+        </div>
+        <a href="index.html" class="overlay-item">Start</a>
+        <a href="rundgang.html" class="overlay-item">3D-Rundgang</a>
+        <a href="spiele.html" class="overlay-item" style="color: var(--goethe-green); font-weight: bold;">Goethe-Spiele</a>
+        <a href="faecher.html" class="overlay-item">Über unsere Fächer</a>
+        <a href="ueber uns.html" class="overlay-item">Über uns</a>
+        <a href="projekt.html" class="overlay-item">Unser Projekt</a>
+    </div>
+
+    <header>
+        <div class="header-main">
+            <a href="index.html" class="logo-area">
+    <img src="logo.webp" alt="Wappen" class="logo-icon">
+    <span class="school-name">
+        Digitaler Tag der offenen Tür
+        <span class="school-subtitle">Goethe-Gymnasium Auerbach</span>
+    </span>
+</a>
+            <div class="menu-toggle" id="mobile-menu-trigger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Start</a></li>
+                    <li><a href="rundgang.html">3D-Rundgang</a></li>
+                    <li><a href="spiele.html" class="active">Goethe-Spiele</a></li>
+                    <li><a href="faecher.html">Über unsere Fächer</a></li>
+                    <li><a href="ueber uns.html">Über uns</a></li>
+                    <li><a href="projekt.html">Unser Projekt</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="intro-full-width-bg">
+        <div class="intro-content-container">
+            <h2>Goethe-Spiele</h2>
+            <p>Interaktive Erlebnisse und spannende Herausforderungen rund um unseren Schulalltag. <br> Hier trifft Tradition auf spielerische Innovation.</p>
+        </div>
+    </section>
+
+    <section class="content-grid-section">
+    
+ <div class="grid-row">
+     <div class="grid-text">
+         <h3>Informatik Spiel</h3>
+         <p>Entdecke die Welt der Informatik!</p>
+         <a href="info app.html" class="game-button">Jetzt starten</a>
+     </div>
+     <div class="grid-image">
+         <a href="info app.html">
+             <img src="info app.png" alt="Info App">
+         </a>
+     </div>
+ </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Englisch</h3>
+            <p>Übe deine Englisch-Kenntnisse!</p>
+            <a href="englisch app.html" class="game-button">Jetzt starten</a>
+        </div>
+        <div class="grid-image">
+            <a href="englisch app.html">
+                <img src="englisch app.png" alt="Englisch App">
+            </a>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>GRW-Quiz (Regierung & Wahlen)</h3>
+            <p>Lerne neue Fakten über unsere Regierung und unsere Wahlen!</p>
+            <a href="grw app.html" class="game-button">Jetzt starten</a>
+        </div>
+        <div class="grid-image">
+            <a href="grw app.html">
+                <img src="grw app.png" alt="GRW App">
+            </a>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Bio LernApp</h3>
+            <p>Übe Deine Biologie-Kenntnisse mit dieser App!</p>
+            <a href="biologie app.html" class="game-button">Jetzt starten</a>
+        </div>
+        <div class="grid-image">
+            <a href="biologie app.html">
+                <img src="biologie app.png" alt="Bio App">
+            </a>
+        </div>
+    </div>
+
+ 
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Physik LernApp</h3>
+            <p>Übe Deine Physik-Kenntnisse mit dieser App!</p>
+            <a href="physik app.html" class="game-button">Jetzt starten</a>
+        </div>
+        <div class="grid-image">
+            <a href="physik app.html">
+                <img src="physik app.png" alt="Physik App">
+            </a>
+        </div>
+    </div>
+	
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Geografie-Quiz</h3>
+            <p>Teste dein Wissen über Deutschland!</p>
+            <a href="https://www.educaplay.com/learning-resources/28419088-physische_karte.html" class="game-button">Jetzt spielen</a>
+        </div>
+        <div class="grid-image">
+            <a href="https://www.educaplay.com/learning-resources/28419088-physische_karte.html">
+                <img src="geo.png" alt="Geo Quiz">
+            </a>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Bundesländer-Quiz</h3>
+            <p>Wie gut kennst du die Bundesländer von Deutschland?</p>
+            <a href="https://www.educaplay.com/learning-resources/28210100-quiz_bundeslander.html" class="game-button">Finde es heraus!</a>
+        </div>
+        <div class="grid-image">
+            <a href="https://www.educaplay.com/learning-resources/28210100-quiz_bundeslander.html">
+                <img src="bundeslaender.png" alt="Bundesländer-Quiz">
+            </a>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div class="grid-text">
+            <h3>Geschichte LernApp</h3>
+            <p>Übe Deine Kenntnisse mit dem Zeitstrahl!</p>
+            <a href="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2%3A2PACX-1vTtMy_KtcYGgo9uZgRypTr_trHhuSB8fOXF4qztjGfDGnu9KZQoIPK8IdggSxMzxPd9qtDbZhDEGxkF&font=Default&lang=en&initial_zoom=2&width=100%25&height=650" class="game-button">Jetzt starten</a>
+        </div>
+        <div class="grid-image">
+            <a href="https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=v2%3A2PACX-1vTtMy_KtcYGgo9uZgRypTr_trHhuSB8fOXF4qztjGfDGnu9KZQoIPK8IdggSxMzxPd9qtDbZhDEGxkF&font=Default&lang=en&initial_zoom=2&width=100%25&height=650">
+                <img src="geschichte app.png" alt="Geschichte App">
+            </a>
+        </div>
+    </div>
+
+
+</section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Goethe-Gymnasium Auerbach. Alle Rechte vorbehalten. | <a href="Quellenverzeichnis unserer Website.pdf" style="color: #aaa;">Quellenverzeichnis</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const openMenuBtn = document.getElementById('mobile-menu-trigger');
+        const closeMenuBtn = document.getElementById('menu-close');
+        const overlayMenu = document.getElementById('menu-overlay');
+
+        openMenuBtn.addEventListener('click', () => {
+            overlayMenu.classList.add('open');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            overlayMenu.classList.remove('open');
+        });
+    </script>
+
+</body>
+</html>
