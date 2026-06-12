@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goethe-Gymnasium Auerbach</title>
+    <style>
+        /* --- 1. GLOBALE EINSTELLUNGEN --- */
+        :root {
+            --goethe-green: #8cae6f;
+            --text-color: #333;
+            --light-grey: #f9f9f9;
+            --white: #ffffff;
+            --border-color: #eee;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+    scroll-behavior: smooth;
+}
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text-color);
+            background-color: var(--white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section { padding: 80px 0; }
+        h1, h2, h3 { font-weight: normal; }
+
+        .btn-green {
+            display: inline-block;
+            background-color: var(--goethe-green);
+            color: var(--white);
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 4px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-green:hover { background-color: #7d9e62; }
+
+        /* --- 2. HEADER & NAVIGATION --- */
+        header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+        }
+
+        .logo-icon { height: 90px; width: auto; }
+        .school-name { 
+    font-size: 2.0rem; 
+    color: var(--goethe-green); 
+    font-weight: 600; 
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column; /* Stapelt die Texte untereinander */
+}
+
+.school-subtitle { 
+    font-size: 1.1rem; 
+    color: #666; 
+    font-weight: 400; 
+    margin-top: 2px;
+}
+
+        nav { border-top: 1px solid var(--border-color); background: #fff; }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 35px;
+            padding: 12px 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active { color: var(--goethe-green); font-weight: bold; }
+
+        /* --- 3. MOBILE MENÜ (BURGER) --- */
+        .menu-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .bar { height: 3px; width: 100%; background-color: var(--goethe-green); border-radius: 2px; }
+
+        /* --- 4. OVERLAY MENÜ --- */
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--white);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px;
+        }
+
+        .menu-overlay.open { display: flex; }
+
+        .close-icon {
+            position: absolute;
+            right: 20px;
+            top: 35px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .cross-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: var(--goethe-green);
+            top: 50%;
+        }
+
+        .cross-line:nth-child(1) { transform: rotate(45deg); }
+        .cross-line:nth-child(2) { transform: rotate(-45deg); }
+
+        .overlay-item {
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* --- 5. CONTENT SEKTIONEN --- */
+        .hero {
+            position: relative;
+            height: 550px;
+            background-image: url('schule.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .hero-content { max-width: 850px; padding: 0 20px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 25px; line-height: 1.2; }
+        .hero p { font-size: 1.15rem; margin-bottom: 20px; font-weight: 300; }
+
+.welcome-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+/* Diese ID haben wir vorhin vergeben */
+#willkommen {
+    scroll-margin-top: 130px; /* Dieser Wert entspricht der Höhe deines Headers + etwas Puffer */
+}
+
+        .welcome-text h2 { font-size: 2.5rem; color: var(--goethe-green); margin-bottom: 30px; }
+        .welcome-text p { margin-bottom: 20px; color: #666; font-size: 1.05rem; }
+        .welcome-image img { width: 100%; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+        .angebote { background-color: var(--light-grey); }
+        .angebote-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .angebote-title h2 { font-size: 2.5rem; color: var(--goethe-green); margin-bottom: 15px; }
+        .angebote-title p { color: #666; font-size: 1.05rem; }
+
+        .angebote-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+@media (max-width: 1100px) {
+            .angebote-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+@media (max-width: 600px) {
+            .angebote-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-content h3 { color: var(--goethe-green); font-size: 1.5rem; margin-bottom: 15px; }
+        .card-content p { font-size: 0.95rem; color: #666; margin-bottom: 25px; flex-grow: 1; }
+
+        .vision { padding: 0; display: flex; flex-wrap: wrap; align-items: center; }
+        .vision-image { flex: 1; min-width: 300px; }
+        .vision-img-fluid {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain; /* Sorgt dafür, dass nichts abgeschnitten wird */
+            max-height: 500px;   /* Verhindert, dass das Bild riesig wird */
+            padding: 20px;       /* Optional: Ein bisschen Abstand zum Rand */
+        }
+        .vision-text {
+            flex: 1; min-width: 300px; padding: 100px 60px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .vision-text h2 { font-size: 2.5rem; color: var(--goethe-green); margin-bottom: 25px; }
+        .vision-text p { color: #666; font-size: 1.1rem; margin-bottom: 30px; }
+
+        footer {
+            background-color: #333;
+            color: #aaa;
+            padding: 60px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* --- 6. RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .menu-toggle { display: flex; }
+            nav { display: none; }
+            .school-name { font-size: 1.5rem; }
+            .logo-icon { height: 60px; }
+            .welcome-grid, .vision { flex-direction: column; grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="close-icon" id="menu-close">
+            <div class="cross-line"></div>
+            <div class="cross-line"></div>
+        </div>
+        <a href="index.html" class="overlay-item" style="color: var(--goethe-green); font-weight: bold;">Start</a>
+        <a href="rundgang.html" class="overlay-item">3D-Rundgang</a>
+        <a href="spiele.html" class="overlay-item">Goethe-Spiele</a>
+        <a href="faecher.html" class="overlay-item">Über unsere Fächer</a>
+        <a href="ueber uns.html" class="overlay-item">Über uns</a>
+        <a href="projekt.html" class="overlay-item">Unser Projekt</a>
+    </div>
+
+    <header>
+        <div class="header-main">
+            <a href="index.html" class="logo-area">
+    <img src="logo.webp" alt="Wappen" class="logo-icon">
+    <span class="school-name">
+        Digitaler Tag der offenen Tür
+        <span class="school-subtitle">Goethe-Gymnasium Auerbach</span>
+    </span>
+</a>
+            <div class="menu-toggle" id="mobile-menu-trigger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html" class="active">Start</a></li>
+                    <li><a href="rundgang.html">3D-Rundgang</a></li>
+                    <li><a href="spiele.html">Goethe-Spiele</a></li>
+                    <li><a href="faecher.html">Über unsere Fächer</a></li>
+                    <li><a href="ueber uns.html">Über uns</a></li>
+                    <li><a href="projekt.html">Unser Projekt</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Willkommen am Goethe-Gymnasium Auerbach</h1>
+            <p>Entdecken Sie unsere Schule auf spielerische Weise. Lernen Sie unsere Angebote, Werte und besonderen Möglichkeiten interaktiv kennen.</p>
+            <p>Begeben Sie sich auf eine spannende Entdeckungsreise durch unsere Lernwelt und erfahren Sie, was unsere Schule so besonders macht.</p>
+            <p>Finden Sie heraus, wie wir Kinder und Jugendliche auf ihrem individuellen Weg begleiten, fördern und stärken.</p>
+            <a href="#willkommen" class="btn-green">Jetzt mehr erfahren!</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <section class="welcome" id="willkommen">
+            <div class="welcome-grid">
+                <div class="welcome-text">
+                    <h2>Herzlich Willkommen!</h2>
+                    <p>Entdecken Sie unsere Schule auf Ihre ganz persönliche Weise. Begeben Sie sich auf eine spannende Entdeckungsreise durch unsere Lernwelten und machen Sie sich mit unseren Angeboten, Werten und vielfältigen Möglichkeiten bekannt.</p>
+                    <p>Erfahren Sie mehr über unsere Räume, Projekte und das, was unsere Schule besonders macht. Schritt für Schritt können Sie unsere Schule erkunden und einen Einblick in unseren Schulalltag gewinnen.</p>
+                    <p>Starten Sie jetzt Ihren Rundgang und entdecken Sie, was unsere Schule auszeichnet.</p>
+                </div>
+                <div class="welcome-image">
+                    <img src="schulschild.webp" alt="Schulschild Goethe-Gymnasium">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="angebote">
+        <div class="container">
+            <div class="angebote-header">
+                <div class="angebote-title">
+                    <h2>Unsere Angebote</h2>
+                    <p>Wir bieten eine breite Palette an Bildungsprogrammen und außerschulischen Aktivitäten, die darauf abzielen, die individuellen Bedürfnisse und Talente unserer Schüler zu fördern.<br>
+Um diese kennen zu lernen, nutzen Sie gerne unsere Angebote!</p>
+                </div>
+                <img src="logo.webp" alt="Goethe-Gymnasium Logo" style="width: 120px; opacity: 0.9;">
+            </div>
+
+            <div class="angebote-grid">
+                <div class="card">
+                    <img src="1.png" alt="Rundgang">
+                    <div class="card-content">
+                        <h3>3D-Rundgang</h3>
+                        <p>Beginnen Sie Ihren Rundgang und entdecken Sie Schritt für Schritt, was unsere Schule zu einem Ort des Lernens, der Entwicklung und des gemeinsamen Miteinanders macht.</p>
+                        <a href="rundgang.html" class="btn-green">Mehr erfahren</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="2.png" alt="Spiele">
+                    <div class="card-content">
+                        <h3>Goethe-Spiele</h3>
+                        <p>Unsere Entdeckerspiele laden dazu ein, die Schule auf spielerische Weise kennenzulernen. Löst kleine Aufgaben und sammelt dabei spannende Informationen über unsere Schule.</p>
+                        <a href="spiele.html" class="btn-green">Mehr erfahren</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="3.png" alt="Fächer">
+                    <div class="card-content">
+                        <h3>Über unsere Fächer</h3>
+                        <p>Entdeckt unsere verschiedenen Fächer und die dazugehörigen Räume. In den Flyern erhaltet Ihr einen kurzen EInblick in die Lernbereiche und Exkursionen unserer Schule.</p>
+                        <a href="faecher.html" class="btn-green">Mehr erfahren</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="4.png" alt="Über uns">
+                    <div class="card-content">
+                        <h3>Über uns</h3>
+                        <p>Lernt unsere Schule, unsere Werte und spannende außerschulische Aktivitäten kennen.</p>
+                        <a href="ueber uns.html" class="btn-green">Mehr erfahren</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="vision">
+        <div class="vision-image">
+                <img src="projekt.png" alt="Projekt" class="vision-img-fluid"></div>
+        <div class="vision-text">
+            <h2>Unsere Vision</h2>
+            <p>Wir wollen Schule nachhaltiger, moderner und zugänglicher machen.
+Durch einen digitalen 3D-Rundgang und online verfügbare Informationen ermöglichen wir es, die Schule ortsunabhängig zu erleben – ganz ohne Anfahrtswege und Papierverbrauch.<br> <br>
+Unser Ziel ist eine Schule, die digitale Möglichkeiten nutzt, Ressourcen schont und allen einen einfachen Zugang bietet.</p>
+            <a href="https://canva.link/uf5bs1j2z6i1pow" class="btn-green">Unser Projekt</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Goethe-Gymnasium Auerbach. Alle Rechte vorbehalten. | <a href="Quellenverzeichnis unserer Website.pdf" style="color: #aaa;">Quellenverzeichnis</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const openMenuBtn = document.getElementById('mobile-menu-trigger');
+        const closeMenuBtn = document.getElementById('menu-close');
+        const overlayMenu = document.getElementById('menu-overlay');
+
+        openMenuBtn.addEventListener('click', () => overlayMenu.classList.add('open'));
+        closeMenuBtn.addEventListener('click', () => overlayMenu.classList.remove('open'));
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Über unsere Fächer - Goethe-Gymnasium Auerbach</title>
+
+    <style>
+        /* --- 1. GLOBALE EINSTELLUNGEN --- */
+        :root {
+            --goethe-green: #8cae6f;
+            --text-color: #333;
+            --light-grey: #f0f0f0;
+            --white: #ffffff;
+            --border-color: #eee;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--white);
+    line-height: 1.6;
+}
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- 2. HEADER & NAVIGATION (Fixiert) --- */
+        header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+        }
+
+        .logo-icon { height: 90px; width: auto; }
+        .school-name { 
+    font-size: 2.0rem; 
+    color: var(--goethe-green); 
+    font-weight: 600; 
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column; /* Stapelt die Texte untereinander */
+}
+
+.school-subtitle { 
+    font-size: 1.1rem; 
+    color: #666; 
+    font-weight: 400; 
+    margin-top: 2px;
+}
+
+        nav { border-top: 1px solid var(--border-color); background: #fff; }
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 35px;
+            padding: 12px 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active { color: var(--goethe-green); font-weight: bold; }
+
+        /* --- 3. MOBILE MENÜ (BURGER) --- */
+        .menu-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .bar { height: 3px; width: 100%; background-color: var(--goethe-green); border-radius: 2px; }
+
+        /* --- 4. OVERLAY MENÜ --- */
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--white);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px;
+        }
+
+        .menu-overlay.open { display: flex; }
+
+        .close-icon {
+            position: absolute;
+            right: 20px;
+            top: 35px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .cross-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: var(--goethe-green);
+            top: 50%;
+        }
+
+        .cross-line:nth-child(1) { transform: rotate(45deg); }
+        .cross-line:nth-child(2) { transform: rotate(-45deg); }
+
+        .overlay-item {
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            width: 100%;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* --- 5. INHALT: FÄCHER --- */
+        .intro-section {
+            background-color: var(--light-grey);
+            padding: 60px 0;
+            text-align: center;
+        }
+.intro-section h1 {
+            color: var(--goethe-green);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+.intro-section h2 {
+    color: var(--goethe-green); /* Nutzt das Grün #8cae6f aus deinen Einstellungen */
+}
+
+.intro-section h3 {
+    color: var(--text-color);
+}
+
+ .intro-section p {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .subjects-grid {
+    display: grid;
+    /* Standard für Mobile: 1 Spalte */
+    grid-template-columns: 1fr; 
+    gap: 40px;
+    padding: 60px 0 0 0;
+}
+
+/* Ab Tablet-Breite (z.B. 600px): 2 Spalten */
+@media (min-width: 600px) {
+    .subjects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Ab Desktop-Breite (z.B. 1000px): 4 Spalten */
+@media (min-width: 1000px) {
+    .subjects-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+        .subject-card {
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .subject-card:hover { transform: translateY(-10px); }
+
+        .subject-image-wrapper {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            background-color: #fff;
+        }
+
+        .subject-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Zeigt das ganze Plakat ohne Beschnitt */
+            padding: 5px;
+        }
+
+        .subject-card h3 {
+            color: var(--text-color);
+            font-family: 'Cantarell';
+            font-size: 1.4rem;
+            margin-top: 10px;
+        }
+
+/* --- NEUER ABSCHNITT: INFO-SPLIT --- */
+        .info-split-section {
+            background-color: var(--light-grey);
+            padding: 60px 0;
+            margin-top: 40px;
+        }
+
+        .info-split-container {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap; /* Für mobile Ansicht */
+        }
+
+        .info-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .info-content h2 {
+            color: var(--text-color);
+            font-family: 'Cantarell', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .info-content p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .info-image {
+            flex: 0 0 350px; /* Gleiche Breite wie die Flyer-Karten */
+        }
+
+        .info-image img {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+/* Erlaubt das Spiegeln der Inhalte */
+.info-split-container.reverse { flex-direction: row-reverse; }
+
+        @media (max-width: 800px) {
+            .info-split-container {
+                flex-direction: column-reverse; /* Text oben, Bild unten auf dem Handy */
+                text-align: center;
+            }
+            .info-image {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+
+        /* --- 6. LIGHTBOX & FOOTER --- */
+        /* --- OPTIMIERTE LIGHTBOX --- */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0; top: 0; 
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+    /* Erlaubt Scrollen, wenn das Bild gezoomt ist */
+    overflow: auto; 
+    cursor: zoom-out;
+}
+
+.lightbox-content { 
+    max-width: 90%; 
+    max-height: 85vh; 
+    border: 3px solid white; 
+    transition: all 0.3s ease;
+    cursor: zoom-in;
+    object-fit: contain;
+}
+
+/* Diese Klasse wird per JavaScript ausgelöst */
+.lightbox-content.zoomed {
+    max-width: 180%; /* Zoom-Faktor: 1.8x der Originalbreite */
+    max-height: none;
+    cursor: zoom-out;
+    margin: auto;
+}
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px; right: 30px;
+            color: white; font-size: 50px; cursor: pointer;
+        }
+
+        footer {
+            background-color: #333;
+            color: #aaa;
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .menu-toggle { display: flex; }
+            nav { display: none; } /* Versteckt Desktop-Nav */
+            .school-name { font-size: 1.4rem; }
+            .logo-icon { height: 60px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="close-icon" id="menu-close">
+            <div class="cross-line"></div>
+            <div class="cross-line"></div>
+        </div>
+        <a href="index.html" class="overlay-item">Start</a>
+        <a href="rundgang.html" class="overlay-item">3D-Rundgang</a>
+        <a href="spiele.html" class="overlay-item">Goethe-Spiele</a>
+        <a href="faecher.html" class="overlay-item" style="color: var(--goethe-green); font-weight: bold;">Über unsere Fächer</a>
+        <a href="ueber uns.html" class="overlay-item">Über uns</a>
+        <a href="projekt.html" class="overlay-item">Unser Projekt</a>
+    </div>
+
+    <header>
+        <div class="header-main">
+            <a href="index.html" class="logo-area">
+    <img src="logo.webp" alt="Wappen" class="logo-icon">
+    <span class="school-name">
+        Digitaler Tag der offenen Tür
+        <span class="school-subtitle">Goethe-Gymnasium Auerbach</span>
+    </span>
+</a>
+            <div class="menu-toggle" id="mobile-menu-trigger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+
+        <nav>
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Start</a></li>
+                    <li><a href="rundgang.html">3D-Rundgang</a></li>
+                    <li><a href="spiele.html">Goethe-Spiele</a></li>
+                    <li><a href="faecher.html" class="active">Über unsere Fächer</a></li>
+                    <li><a href="ueber uns.html">Über uns</a></li>
+                    <li><a href="projekt.html">Unser Projekt</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="intro-section">
+        <div class="container">
+            <h1>Entdecke unsere Fächer!</h1>
+            <p>Hier erfährst Du alles Wichtige über unsere Fachbereiche - von den Inhalten über spannende Projekte bis zu den Besonderheiten jedes Faches. So bekommst Du einen klaren Überblick und kannst die Vielfalt unserer Schule kennenlernen.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="subjects-grid">
+            
+            <div class="subject-card">
+                <div class="subject-image-wrapper">
+                    <img src="biologie.png" alt="Biologie Plakat">
+                </div>
+                <h3>Biologie</h3>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-image-wrapper">
+                    <img src="chemie.png" alt="Chemie Plakat">
+                </div>
+                <h3>Chemie</h3>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-image-wrapper">
+                    <img src="geografie.png" alt="Geographie Plakat">
+                </div>
+                <h3>Geografie</h3>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-image-wrapper">
+                    <img src="geschichte.png" alt="Geschichte Plakat">
+                </div>
+                <h3>Geschichte</h3>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-image-wrapper">
+                    <img src="grw.png" alt="GRW Plakat">
+                </div>
+                <h3>GRW</h3>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-image-wrapper">
+                    <img src="informatik.png" alt="Informatik Plakat">
+                </div>
+                <h3>Informatik</h3>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-image-wrapper">
+                    <img src="physik.png" alt="Physik Plakat">
+                </div>
+                <h3>Physik</h3>
+            </div>
+
+        </div>
+    </main>
+
+<section class="info-split-section">
+        <div class="container">
+            <div class="info-split-container">
+                
+                <div class="info-content">
+                    <h2>Unsere Sprachen</h2>
+                    <p>
+                        Lust auf eine neue Sprache? <br>
+Ab der 6. Klasse hast Du die Wahl zwischen Spanisch, Französisch und Latein. <br>
+So kannst Du neue Länder und Kulturen kennenlernen und entdecken, wie vielfältig unsere Welt ist.
+                    </p>
+                </div>
+
+                <div class="info-image">
+                    <img src="sprachen.webp" alt="Sprachen">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+<section class="info-split-section" style="margin-top: 0; padding-top: 0; border-top: 10px solid var(--white);">
+        <div class="container">
+            <div class="info-split-container reverse">
+                
+                <div class="info-content">
+                    <h2>Unsere Profile</h2>
+                    <p>
+                        Ab der 8. Klasse kannst Du dein Lieblingsprofil wählen: <br>künstlerisch, sportlich oder naturwissenschaftlich. <br>
+Dort kannst Du Neues ausprobieren, deine Talente entdecken und noch besser in dem werden, was Dir Spaß macht!
+                    </p>
+                </div>
+
+                <div class="info-image">
+                    <img src="profile.webp" alt="Profil" style="margin-top: 50px;">
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+<section class="info-split-section" style="background-color: var(--white); border-top: 1px solid var(--border-color);">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2>Präsentation: Einblicke in unsere Schule</h2>
+            <p>Nutze die Symbole auf den einzelnen Folien und erkunde unser Schulleben!</p>
+        </div>
+        
+        <div class="presentation-container">
+            <div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%;
+ padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden;
+ border-radius: 8px; will-change: transform;">
+  <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0;margin: 0;"
+    src="https://www.canva.com/design/DAHG7YrTeZM/fE3AuwnfLbFHnhxUgTXmPQ/view?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+  </iframe>
+</div>
+<a href="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAHG7YrTeZM&#x2F;fE3AuwnfLbFHnhxUgTXmPQ&#x2F;view?utm_content=DAHG7YrTeZM&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener">praesentation faecher.pdf</a> von Fiona Fritzsch
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="praesentation faecher.pdf" download style="display: inline-block; padding: 10px 20px; background-color: var(--goethe-green); color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: opacity 0.3s;">
+                Als PDF herunterladen
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .presentation-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #333; /* Dunkler Hintergrund für Kino-Look */
+        line-height: 0;   /* Verhindert Lücken im Container */
+    }
+
+    /* Optionale Hover-Effekt für den Button */
+    .presentation-container + div a:hover {
+        opacity: 0.9;
+    }
+</style>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Goethe-Gymnasium Auerbach. Alle Rechte vorbehalten. | <a href="Quellenverzeichnis unserer Website.pdf" style="color: #aaa;">Quellenverzeichnis</a></p>
+        </div>
+    </footer>
+
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightbox-close-btn">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <script>
+        // Menü Logik
+        const openMenuBtn = document.getElementById('mobile-menu-trigger');
+        const closeMenuBtn = document.getElementById('menu-close');
+        const overlayMenu = document.getElementById('menu-overlay');
+
+        openMenuBtn.addEventListener('click', () => overlayMenu.classList.add('open'));
+        closeMenuBtn.addEventListener('click', () => overlayMenu.classList.remove('open'));
+
+        // Lightbox Logik
+        // Erweiterte Lightbox Logik mit Zoom
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const closeLightbox = document.getElementById('lightbox-close-btn');
+const cards = document.querySelectorAll('.subject-card img, .info-image img');
+
+cards.forEach(img => {
+    img.addEventListener('click', (e) => {
+        e.stopPropagation(); // Verhindert Fehler beim Öffnen
+        lightbox.style.display = 'flex';
+        lightboxImg.src = img.src;
+        lightboxImg.classList.remove('zoomed'); // Immer un-gezoomt starten
+    });
+});
+
+// Zoom-Toggle bei Klick auf das Bild
+lightboxImg.addEventListener('click', (e) => {
+    e.stopPropagation(); // Verhindert, dass die Lightbox schließt
+    lightboxImg.classList.toggle('zoomed');
+});
+
+// Schließen der Lightbox
+const hideLightbox = () => {
+    lightbox.style.display = 'none';
+    lightboxImg.classList.remove('zoomed'); // Zoom zurücksetzen
+};
+
+closeLightbox.addEventListener('click', hideLightbox);
+lightbox.addEventListener('click', hideLightbox);
+    </script>
+
+</body>
+</html>

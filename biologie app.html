@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Bio-Lernwelt 🌿</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4caf50;
+            --primary-dark: #388e3c;
+            --accent-color: #ff9800;
+            --bg-color: #e8f5e9;
+            --card-bg: #ffffff;
+            --text-main: #2e4a31;
+            --correct-color: #4caf50;
+            --wrong-color: #f44336;
+        }
+
+        body {
+            font-family: 'Nunito', 'Comic Sans MS', sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px 10px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 25px;
+            border: none;
+            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.2);
+        }
+
+        h1 { 
+            text-align: center; 
+            color: var(--primary-color); 
+            font-size: 2.5em; 
+            margin-bottom: 5px; 
+            text-shadow: 2px 2px 0px #c8e6c9;
+        }
+        
+        /* Sterne & Fortschritt */
+        #score-display { 
+            text-align: center; 
+            font-size: 1.6em; 
+            margin-bottom: 10px; 
+            color: var(--accent-color); 
+            font-weight: 900;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 15px;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff9800, #ffeb3b);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Navigation */
+        .tabs { 
+            display: flex; 
+            justify-content: space-around; 
+            margin-bottom: 25px; 
+            gap: 10px; 
+        }
+        
+        .tab-btn {
+            background: #f1f8e9;
+            border: 3px solid transparent;
+            padding: 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 800;
+            flex: 1;
+            font-size: 1.1em;
+            color: var(--primary-dark);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.15);
+        }
+
+        .tab-btn.active { 
+            background: var(--primary-color); 
+            color: white; 
+            border-color: var(--primary-dark);
+            box-shadow: 0 6px 0 var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .tab-btn.active:active {
+            box-shadow: 0 0 0 var(--primary-dark);
+            transform: translateY(4px);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { 
+            display: block; 
+            animation: fadeIn 0.4s ease-out; 
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Wissens-Karten */
+        .card {
+            background: #fff;
+            border-left: 6px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        .card:hover { transform: scale(1.02); }
+        .card h3 { margin-top: 0; color: var(--primary-dark); font-size: 1.4em; }
+        .card-img { font-size: 4em; text-align: center; margin: 10px 0; animation: float 3s ease-in-out infinite; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Übungen */
+        .exercise {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .exercise p { font-size: 1.1em; margin-top: 0; color: #333; }
+
+        .options button {
+            display: flex; 
+            align-items: center;
+            width: 100%; 
+            padding: 12px 15px; 
+            margin: 8px 0;
+            border: 2px solid #eeeeee; 
+            border-radius: 12px; 
+            background: #fafafa;
+            cursor: pointer; 
+            font-size: 1.05em; 
+            text-align: left;
+            font-family: inherit;
+            font-weight: 700;
+            color: #555;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .options button:hover { 
+            background: #e8f5e9; 
+            border-color: var(--primary-color);
+            transform: scale(1.01) translateX(5px);
+            color: var(--primary-dark);
+        }
+
+        .btn-icon { margin-right: 10px; font-size: 1.2em; }
+        
+        input[type="text"] {
+            width: calc(100% - 24px); 
+            padding: 12px; 
+            border-radius: 12px; 
+            border: 2px solid #ccc; 
+            font-size: 1.1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 8px rgba(76, 175, 80, 0.3); }
+
+        .check-btn {
+            background: var(--accent-color); 
+            color: white; 
+            border: none;
+            padding: 12px 25px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 900; 
+            font-size: 1.1em;
+            margin-top: 15px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 0 #e65100;
+        }
+        .check-btn:hover { background: #ffb74d; transform: translateY(-2px); }
+        .check-btn:active { box-shadow: 0 0 0 #e65100; transform: translateY(2px); }
+
+        .feedback { 
+            margin-top: 15px; 
+            padding: 12px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            display: none; 
+            animation: fadeIn 0.3s;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .correct { background: #d4edda; color: #155724; display: block; border: 2px solid #c3e6cb; }
+        .wrong { background: #f8d7da; color: #721c24; display: block; border: 2px solid #f5c6cb; }
+
+        /* Animationen für Interaktion */
+        .shake { animation: shakeError 0.5s; }
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .star-pop { animation: popStar 0.6s ease-out; display: inline-block; }
+        @keyframes popStar {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.8) rotate(20deg); color: gold; text-shadow: 0 0 10px gold; }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🌱 Bio-Entdecker App</h1>
+    <div id="score-display">Sterne gesammelt: <span id="stars">0</span> ⭐</div>
+    
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('wissen')">📖 Lernen</button>
+        <button class="tab-btn" onclick="showTab('ueben')">✍️ Quiz</button>
+        <button class="tab-btn" onclick="showTab('hilfe')">💡 Tipps</button>
+    </div>
+
+    <div id="wissen" class="tab-content active">
+        <div class="card">
+            <h3>🦴 Unser Skelett</h3>
+            <div class="card-img">💀🦴</div>
+            <p>Dein Körper hat über 200 Knochen! Sie halten dich stabil wie das Gerüst eines Hauses. Der wichtigste Teil ist deine <b>Wirbelsäule</b> – ohne sie könntest du nicht aufrecht stehen.</p>
+        </div>
+        <div class="card">
+            <h3>🥩 Säugetiere</h3>
+            <div class="card-img">🐕🐋🐄</div>
+            <p>Was macht ein Säugetier aus? 1. Sie haben meist ein Fell. 2. Die Babys trinken Milch bei der Mutter. 3. Sie atmen mit einer Lunge. (Sogar Wale sind Säugetiere!)</p>
+        </div>
+        <div class="card">
+            <h3>☀️ Warum sind Pflanzen grün?</h3>
+            <div class="card-img">🌻🌳☀️</div>
+            <p>Pflanzen brauchen zum Leben Licht, Wasser und Luft (CO2). In ihren Blättern haben sie eine "Küche" (den grünen Farbstoff Chlorophyll). Dort kochen sie ihren eigenen Zucker zum Wachsen und schenken uns dabei <b>Sauerstoff</b> zum Atmen.</p>
+        </div>
+        <div class="card">
+            <h3>🍎 Gesund essen</h3>
+            <div class="card-img">🥦🥚🍝</div>
+            <p>Dein Körper braucht Vitamine (aus Obst und Gemüse), Energie (aus Nudeln oder Brot) und Baustoffe (wie Eiweiß aus Eiern oder Bohnen), um groß und stark zu werden.</p>
+        </div>
+    </div>
+
+    <div id="ueben" class="tab-content">
+        <h2 style="color: var(--primary-dark); text-align: center;">Kannst du alle 10 Fragen lösen?</h2>
+
+        <div class="exercise" id="ex1">
+            <p><b>1. Wie viele Knochen hat ein erwachsener Mensch etwa?</b></p>
+            <div class="options">
+                <button onclick="check(1, 'a', this)"><span class="btn-icon">🖐️</span> A) Genau 10 Stück</button>
+                <button onclick="check(1, 'b', this)"><span class="btn-icon">🦴</span> B) Über 200 Stück</button>
+                <button onclick="check(1, 'c', this)"><span class="btn-icon">♾️</span> C) Über 5000 Stück</button>
+            </div>
+            <div id="f1" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex2">
+            <p><b>2. Welches Tier ist KEIN Säugetier?</b></p>
+            <div class="options">
+                <button onclick="check(2, 'a', this)"><span class="btn-icon">🐶</span> A) Hund</button>
+                <button onclick="check(2, 'b', this)"><span class="btn-icon">🐳</span> B) Wal</button>
+                <button onclick="check(2, 'c', this)"><span class="btn-icon">🐠</span> C) Goldfisch</button>
+            </div>
+            <div id="f2" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex3">
+            <p><b>3. Was schenken uns Pflanzen, wenn sie in der Sonne "kochen"?</b></p>
+            <input type="text" id="in3" placeholder="Ein Gas zum Atmen...">
+            <button class="check-btn" onclick="checkTxt(3, 'sauerstoff')">Prüfen</button>
+            <div id="f3" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex4">
+            <p><b>4. Wo im Körper sitzt das Gehirn?</b></p>
+            <div class="options">
+                <button onclick="check(4, 'a', this)"><span class="btn-icon">🤰</span> A) Im Bauch</button>
+                <button onclick="check(4, 'b', this)"><span class="btn-icon">🧠</span> B) Im Kopf (Schädel)</button>
+            </div>
+            <div id="f4" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex5">
+            <p><b>5. Welches Organ pumpt Blut durch deinen Körper?</b></p>
+            <input type="text" id="in5" placeholder="Es macht pocher-poch...">
+            <button class="check-btn" onclick="checkTxt(5, 'herz')">Prüfen</button>
+            <div id="f5" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex6">
+            <p><b>6. Was brauchen Pflanzen zum Wachsen unbedingt?</b></p>
+            <div class="options">
+                <button onclick="check(6, 'a', this)"><span class="btn-icon">💧</span> A) Licht, Wasser und Luft</button>
+                <button onclick="check(6, 'b', this)"><span class="btn-icon">🍕</span> B) Limonade und Pizza</button>
+            </div>
+            <div id="f6" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex7">
+            <p><b>7. Ist der Mensch ein Säugetier?</b></p>
+            <div class="options">
+                <button onclick="check(7, 'a', this)"><span class="btn-icon">👍</span> A) Ja</button>
+                <button onclick="check(7, 'b', this)"><span class="btn-icon">👎</span> B) Nein</button>
+            </div>
+            <div id="f7" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex8">
+            <p><b>8. Wie heißt das Gerüst aus Knochen in deinem Körper?</b></p>
+            <input type="text" id="in8" placeholder="S...ett">
+            <button class="check-btn" onclick="checkTxt(8, 'skelett')">Prüfen</button>
+            <div id="f8" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex9">
+            <p><b>9. Welches Organ hilft uns beim Atmen?</b></p>
+            <div class="options">
+                <button onclick="check(9, 'a', this)"><span class="btn-icon">🍔</span> A) Der Magen</button>
+                <button onclick="check(9, 'b', this)"><span class="btn-icon">🫁</span> B) Die Lunge</button>
+            </div>
+            <div id="f9" class="feedback"></div>
+        </div>
+
+        <div class="exercise" id="ex10">
+            <p><b>10. Woher bekommen wir Vitamine?</b></p>
+            <div class="options">
+                <button onclick="check(10, 'a', this)"><span class="btn-icon">🍎</span> A) Aus Obst und Gemüse</button>
+                <button onclick="check(10, 'b', this)"><span class="btn-icon">🍬</span> B) Aus Gummibärchen</button>
+            </div>
+            <div id="f10" class="feedback"></div>
+        </div>
+    </div>
+
+    <div id="hilfe" class="tab-content">
+        <div class="card">
+            <h3>💡 Tipps für Bio-Profis</h3>
+            <ul>
+                <li style="margin-bottom: 10px;">Lies die Fragen genau! Manchmal ist ein kleines "nicht" versteckt.</li>
+                <li style="margin-bottom: 10px;">Überlege: "Habe ich das Organ an meinem eigenen Körper?"</li>
+                <li>Pflanzen-Frage? Denk an einen Baum im Garten: Was braucht er, damit er nicht verwelkt?</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>🔍 Wörter-Hilfe</h3>
+            <p><b>Säugetier:</b> Tiere, deren Babys Milch trinken.</p>
+            <p><b>Sauerstoff:</b> Das unsichtbare Gas in der Luft, das wir zum Überleben brauchen.</p>
+            <p><b>Wirbelsäule:</b> Die Knochen-Kette in deinem Rücken.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let starCount = 0;
+    let solved = [];
+
+    // Tab-Wechsel
+    function showTab(id) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    const answers = { 1:'b', 2:'c', 4:'b', 6:'a', 7:'a', 9:'b', 10:'a' };
+
+    // Multiple Choice prüfen
+    function check(num, choice, btnElement) {
+        if(solved.includes(num)) return; // Wenn schon gelöst, nichts tun
+        
+        let f = document.getElementById('f'+num);
+        let exerciseBox = document.getElementById('ex'+num);
+
+        if(choice === answers[num]) {
+            f.innerHTML = "Richtig! <span class='star-pop'>⭐</span>"; 
+            f.className = "feedback correct";
+            exerciseBox.style.borderColor = "var(--correct-color)";
+            addStar(num);
+        } else {
+            f.innerHTML = "Versuch es nochmal! Schau unter 'Lernen' nach."; 
+            f.className = "feedback wrong";
+            // Shake Animation auslösen
+            exerciseBox.classList.remove("shake");
+            void exerciseBox.offsetWidth; // Trigger Reflow
+            exerciseBox.classList.add("shake");
+        }
+    }
+
+    // Texteingaben prüfen
+    function checkTxt(num, correct) {
+        if(solved.includes(num)) return;
+        
+        let inputField = document.getElementById('in'+num);
+        let val = inputField.value.toLowerCase().trim();
+        let f = document.getElementById('f'+num);
+        let exerciseBox = document.getElementById('ex'+num);
+
+        if(val === correct) {
+            f.innerHTML = "Super Antwort! <span class='star-pop'>⭐</span>"; 
+            f.className = "feedback correct";
+            inputField.style.borderColor = "var(--correct-color)";
+            inputField.disabled = true; // Sperren nach richtiger Antwort
+            exerciseBox.style.borderColor = "var(--correct-color)";
+            addStar(num);
+        } else {
+            f.innerHTML = "Fast! Überleg nochmal."; 
+            f.className = "feedback wrong";
+            // Shake Animation auslösen
+            exerciseBox.classList.remove("shake");
+            void exerciseBox.offsetWidth;
+            exerciseBox.classList.add("shake");
+        }
+    }
+
+    // Sterne & Fortschritt verwalten
+    function addStar(num) {
+        starCount++;
+        solved.push(num);
+        
+        // Sternanzahl updaten + Animation
+        let starSpan = document.getElementById('stars');
+        starSpan.innerText = starCount;
+        starSpan.classList.remove('star-pop');
+        void starSpan.offsetWidth;
+        starSpan.classList.add('star-pop');
+
+        // Fortschrittsbalken füllen
+        document.getElementById('progress').style.width = (starCount * 10) + "%";
+
+        // Konfetti-Alert am Ende (verzögert für die Animation)
+        if(starCount === 10) {
+            setTimeout(() => {
+                alert("🎉 Wahnsinn! Du bist jetzt ein echter Biologie-Experte! 🏆");
+            }, 600);
+        }
+    }
+</script>
+
+</body>
+</html>

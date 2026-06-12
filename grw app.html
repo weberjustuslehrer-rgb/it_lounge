@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>📚 Gemeinschaft, Recht und Wirtschaft</title>
+
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: linear-gradient(120deg,#74ebd5,#acb6e5);
+}
+
+header {
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+nav {
+  display: flex;
+  background: rgba(0,0,0,0.2);
+}
+
+nav button {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+nav button.active {
+  background: #ff9800;
+}
+
+section { display: none; padding: 20px; }
+section.active { display: block; }
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.progress {
+  height: 10px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #27ae60;
+  transition: 0.3s;
+}
+
+#scoreBox {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📚 Gemeinschaft, Recht und Wirtschaft</h1>
+<p>Politik verstehen – einfach und interaktiv</p>
+</header>
+
+<nav>
+<button class="tab active" onclick="showTab('lernen')">📘 Lernen</button>
+<button class="tab" onclick="showTab('quiz')">🎮 Quiz</button>
+<button class="tab" onclick="showTab('hilfe')">💡 Hilfe</button>
+</nav>
+
+<section id="lernen" class="active">
+
+<div class="card">
+<h3>🏛️ Bundestag</h3>
+<p>Der Bundestag ist das wichtigste Parlament in Deutschland. Die Abgeordneten im Bundestag werden vom Volk gewählt. Sie vertreten die Interessen der Bürgerinnen und Bürger.</p>
+<p>Eine der wichtigsten Aufgaben des Bundestages ist es, Gesetze zu beschließen. Außerdem kontrolliert der Bundestag die Regierung und überprüft, ob sie ihre Aufgaben richtig erfüllt.</p>
+<p>Der Bundestag wählt auch den Bundeskanzler, der die Regierung leitet.</p>
+</div>
+
+<div class="card">
+<h3>👩‍💼 Regierung</h3>
+<p>Die Regierung besteht aus dem Bundeskanzler oder der Bundeskanzlerin und den Ministern. Jeder Minister ist für ein bestimmtes Thema zuständig, zum Beispiel Bildung, Gesundheit oder Umwelt.</p>
+<p>Die Regierung hat die Aufgabe, die Gesetze umzusetzen, die im Bundestag beschlossen wurden. Sie sorgt also dafür, dass die Regeln im Alltag wirklich angewendet werden.</p>
+<p>Außerdem plant die Regierung neue Gesetze und trifft wichtige Entscheidungen für das Land.</p>
+</div>
+
+<div class="card">
+<h3>🗳️ Wahlen</h3>
+<p>Wahlen sind ein wichtiger Bestandteil der Demokratie. Bei einer Wahl entscheiden die Bürgerinnen und Bürger, welche Parteien und Politiker sie vertreten sollen.</p>
+<p>In Deutschland findet die Bundestagswahl in der Regel alle vier Jahre statt. Dabei wählen die Bürger die Abgeordneten für den Bundestag.</p>
+<p>Wahlen folgen bestimmten Grundsätzen: Sie sind frei, gleich, geheim und unmittelbar. Das bedeutet, dass jeder selbst entscheiden darf, jede Stimme gleich viel zählt und niemand sehen kann, wen man gewählt hat.</p>
+</div>
+
+</section>
+
+<section id="quiz">
+
+<div id="scoreBox">Punkte: 0</div>
+<div class="progress"><div class="progress-bar" id="bar"></div></div>
+
+<div class="card" id="quizBox"></div>
+
+<button onclick="restart()">🔄 Neustart</button>
+
+</section>
+
+<section id="hilfe">
+
+<div class="card">
+<h3>💡 Wie du das Quiz meisterst</h3>
+<p>Lies jede Frage aufmerksam durch und achte auf wichtige Begriffe wie „Bundestag“, „Regierung“ oder „Wahl“. Oft steckt die richtige Antwort schon im Lernbereich.</p>
+</div>
+
+<div class="card">
+<h3>🧠 Denke logisch</h3>
+<p>Überlege dir bei jeder Antwort: Ergibt das wirklich Sinn? Viele falsche Antworten sind absichtlich unlogisch oder übertrieben formuliert.</p>
+</div>
+
+<div class="card">
+<h3>📘 Nutze den Lernbereich</h3>
+<p>Wenn du dir unsicher bist, kannst du jederzeit zurück in den Bereich „Lernen“ wechseln und die Inhalte noch einmal durchlesen.</p>
+</div>
+
+<div class="card">
+<h3>🎯 Ziel</h3>
+<p>Versuche, alle 15 Fragen richtig zu beantworten. So kannst du dein Wissen über Politik und Demokratie überprüfen und verbessern.</p>
+</div>
+
+</section>
+
+<script>
+
+let score = 0;
+let current = 0;
+
+const questions = [
+
+["Wer wählt den Bundeskanzler?",
+["Das Volk wählt den Bundeskanzler direkt in einer Wahl.",
+"Der Bundestag wählt den Bundeskanzler nach der Wahl.",
+"Der Bundespräsident bestimmt den Bundeskanzler alleine.",
+"Die Parteien entscheiden gemeinsam ohne Wahl."],1],
+
+["Was ist die wichtigste Aufgabe des Bundestages?",
+["Der Bundestag organisiert alle Wahlen im Land.",
+"Der Bundestag beschließt Gesetze für Deutschland.",
+"Der Bundestag leitet Schulen und Universitäten.",
+"Der Bundestag ersetzt die Gerichte."],1],
+
+["Was bedeutet der Wahlgrundsatz „gleich“?",
+["Alle Menschen müssen gleichzeitig wählen gehen.",
+"Jede Stimme hat den gleichen Wert.",
+"Alle wählen dieselbe Partei.",
+"Manche Stimmen zählen doppelt."],1],
+
+["Was passiert nach einer Wahl?",
+["Die Wahl wird gelöscht und vergessen.",
+"Die Stimmen werden ausgezählt.",
+"Neue Regeln werden erfunden.",
+"Niemand macht etwas mit den Stimmen."],1],
+
+["Was ist eine Partei?",
+["Eine Partei ist eine Schule.",
+"Eine Partei ist eine Gruppe mit politischen Zielen.",
+"Eine Partei ist ein Gesetz.",
+"Eine Partei ist ein Gebäude."],1],
+
+["Was bedeutet „frei wählen“?",
+["Man darf selbst entscheiden, wen man wählt.",
+"Man muss eine bestimmte Partei wählen.",
+"Man wird bei der Wahl kontrolliert.",
+"Man darf nicht selbst entscheiden."],0],
+
+["Wer kontrolliert die Regierung?",
+["Der Bundestag kontrolliert die Regierung.",
+"Die Polizei kontrolliert die Regierung.",
+"Die Schulen kontrollieren die Regierung.",
+"Der Bundespräsident kontrolliert alles allein."],0],
+
+["Was ist die Aufgabe eines Ministers?",
+["Ein Minister leitet einen bestimmten politischen Bereich.",
+"Ein Minister zählt Stimmen aus.",
+"Ein Minister entscheidet alle Gesetze alleine.",
+"Ein Minister organisiert Wahlen."],0],
+
+["Was bedeutet Demokratie?",
+["Das Volk entscheidet über politische Fragen.",
+"Ein König entscheidet alles alleine.",
+"Nur eine Person trifft alle Entscheidungen.",
+"Niemand trifft Entscheidungen."],0],
+
+["Was ist ein Stimmzettel?",
+["Ein Stimmzettel ist ein Zettel zum Wählen.",
+"Ein Stimmzettel ist ein Gesetz.",
+"Ein Stimmzettel ist ein Vertrag.",
+"Ein Stimmzettel ist ein Ausweis."],0],
+
+["Was bedeutet „unmittelbar“ bei Wahlen?",
+["Die Stimme wird direkt gezählt.",
+"Jemand anderes entscheidet an deiner Stelle.",
+"Die Wahl wird verschoben.",
+"Die Stimmen werden halb gezählt."],0],
+
+["Was passiert in der Wahlkabine?",
+["Man wählt unbeobachtet und geheim.",
+"Die Stimmen werden gezählt.",
+"Politiker halten Reden.",
+"Gesetze werden beschlossen."],0],
+
+["Wer darf wählen?",
+["Alle erwachsenen Bürger dürfen wählen.",
+"Nur Politiker dürfen wählen.",
+"Nur Lehrer dürfen wählen.",
+"Alle Kinder dürfen wählen."],0],
+
+["Warum gibt es Parteien?",
+["Parteien setzen politische Ziele um.",
+"Parteien organisieren Spiele.",
+"Parteien verhindern Wahlen.",
+"Parteien löschen Gesetze."],0],
+
+["Was passiert mit den Stimmen nach der Wahl?",
+["Die Stimmen werden ausgezählt.",
+"Die Stimmen werden gelöscht.",
+"Die Stimmen werden versteckt.",
+"Die Stimmen werden nicht benutzt."],0]
+
+];
+
+function showTab(id) {
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  event.target.classList.add("active");
+}
+
+function loadQuestion() {
+  if(current >= questions.length){
+    document.getElementById("quizBox").innerHTML =
+      "<h2>🎉 Fertig! Punkte: "+score+"/15</h2>";
+    return;
+  }
+
+  let q = questions[current];
+  let html = "<h3>"+(current+1)+". "+q[0]+"</h3>";
+
+  q[1].forEach((a,i)=>{
+    html += `<button onclick="answer(${i})">${a}</button><br>`;
+  });
+
+  document.getElementById("quizBox").innerHTML = html;
+  document.getElementById("bar").style.width =
+    ((current)/questions.length*100)+"%";
+}
+
+function answer(i){
+  let correct = questions[current][2];
+
+  if(i === correct){
+    score++;
+    alert("Richtig! 🎉");
+  } else {
+    alert("Falsch!");
+  }
+
+  current++;
+  document.getElementById("scoreBox").textContent = "Punkte: "+score;
+  loadQuestion();
+}
+
+function restart(){
+  score = 0;
+  current = 0;
+  loadQuestion();
+  document.getElementById("scoreBox").textContent = "Punkte: 0";
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>

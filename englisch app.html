@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Englisch LernApp</title>
+<style>
+body { font-family: Arial; margin: 0; background: #f0f4f8; }
+header { background: #4CAF50; color: white; padding: 15px; text-align: center; }
+.tabs { display: flex; background: #333; }
+.tabs button { flex: 1; padding: 14px; color: white; background: #333; border: none; cursor: pointer; }
+.tabs button.active { background: #4CAF50; }
+.content { display: none; padding: 20px; }
+.content.active { display: block; }
+.card { background: white; padding: 15px; margin: 10px 0; border-radius: 10px; }
+button.check { background: #4CAF50; color: white; border: none; padding: 8px; margin-top: 10px; cursor: pointer; }
+.feedback { margin-top: 10px; font-weight: bold; }
+.help-box { background: #fff3cd; padding: 10px; border-radius: 8px; }
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 Englisch LernApp (4. Klasse)</h1>
+</header>
+
+<div class="tabs">
+<button class="tablink active" onclick="openTab('theory')">📖 Erklärungen</button>
+<button class="tablink" onclick="openTab('practice')">✏️ Übungen</button>
+<button class="tablink" onclick="openTab('help')">💡 Hilfe</button>
+</div>
+
+<div id="theory" class="content active">
+
+<div class="card">
+<h3>Present</h3>
+<p>
+I play football.<br><br>
+
+<b>Das ist die Gegenwart.</b><br>
+Man benutzt es, wenn etwas <b>jetzt passiert</b> oder <b>regelmäßig passiert</b>.<br><br>
+
+<b>Beispiele:</b><br>
+I play football.<br>
+She eats an apple.<br><br>
+
+<b>Regel:</b><br>
+Meist benutzt man die <b>Grundform</b> (play, eat).<br>
+Bei <b>he / she / it</b> kommt oft ein <b>-s</b> dazu → plays, eats.<br><br>
+
+<b>Signalwörter:</b><br>
+every day, always, often
+</p>
+</div>
+
+<div class="card">
+<h3>Past</h3>
+<p>
+I played football.<br><br>
+
+<b>Das ist die Vergangenheit.</b><br>
+Man benutzt es, wenn etwas <b>schon passiert ist</b>.<br><br>
+
+<b>Beispiele:</b><br>
+I played football.<br>
+We went to school.<br>
+I saw a dog.<br><br>
+
+<b>Regeln:</b><br>
+Viele Verben bekommen <b>-ed</b> → played.<br>
+Aber es gibt auch <b>unregelmäßige Verben</b>:<br>
+go → went<br>
+see → saw<br><br>
+
+<b>Signalwörter:</b><br>
+yesterday, last week, ago
+</p>
+</div>
+
+<div class="card">
+<h3>Future</h3>
+<p>
+I will play football.<br><br>
+
+<b>Das ist die Zukunft.</b><br>
+Man benutzt es, wenn etwas <b>noch passieren wird</b>.<br><br>
+
+<b>Wichtig:</b><br>
+Man braucht immer <b>will</b>!<br><br>
+
+<b>Aufbau:</b><br>
+will + Grundform → will play, will eat<br><br>
+
+<b>Beispiele:</b><br>
+I will play football tomorrow.<br>
+She will eat an apple.<br><br>
+
+<b>Signalwörter:</b><br>
+tomorrow, next week, soon
+</p>
+</div>
+
+</div>
+
+<div id="practice" class="content">
+
+<!-- ZEITFORMEN -->
+<div class="card"><h3>Zeitformen 1</h3>
+<p>I ___ football every day.</p>
+<input id="t1"><button class="check" onclick="check('t1','play','f1')">Prüfen</button>
+<div id="f1" class="feedback"></div></div>
+
+<div class="card"><h3>Zeitformen 2</h3>
+<p>Yesterday I ___ (play).</p>
+<input id="t2"><button class="check" onclick="check('t2','played','f2')">Prüfen</button>
+<div id="f2" class="feedback"></div></div>
+
+<div class="card"><h3>Zeitformen 3</h3>
+<p>Tomorrow I ___ play.</p>
+<input id="t3"><button class="check" onclick="check('t3','will','f3')">Prüfen</button>
+<div id="f3" class="feedback"></div></div>
+
+<div class="card"><h3>Zeitformen 4</h3>
+<p>She ___ (eat) an apple every day.</p>
+<input id="t4"><button class="check" onclick="check('t4','eats','f4')">Prüfen</button>
+<div id="f4" class="feedback"></div></div>
+
+<div class="card"><h3>Zeitformen 5</h3>
+<p>We ___ (go) to school yesterday.</p>
+<input id="t5"><button class="check" onclick="check('t5','went','f5')">Prüfen</button>
+<div id="f5" class="feedback"></div></div>
+
+<div class="card"><h3>Zeitformen 6</h3>
+<p>I ___ (see) a dog yesterday.</p>
+<input id="t6"><button class="check" onclick="check('t6','saw','f6')">Prüfen</button>
+<div id="f6" class="feedback"></div></div>
+
+<div class="card"><h3>Zeitformen 7</h3>
+<p>They ___ play tomorrow.</p>
+<input id="t7"><button class="check" onclick="check('t7','will','f7')">Prüfen</button>
+<div id="f7" class="feedback"></div></div>
+
+<div class="card"><h3>Zeitformen 8</h3>
+<p>He ___ (play) yesterday.</p>
+<input id="t8"><button class="check" onclick="check('t8','played','f8')">Prüfen</button>
+<div id="f8" class="feedback"></div></div>
+
+<!-- VOKABELN -->
+<div class="card"><h3>Vokabel 1</h3>
+<p>essen = ?</p>
+<input id="v1"><button class="check" onclick="check('v1','eat','fv1')">Prüfen</button>
+<div id="fv1" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 2</h3>
+<p>gehen = ?</p>
+<input id="v2"><button class="check" onclick="check('v2','go','fv2')">Prüfen</button>
+<div id="fv2" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 3</h3>
+<p>sehen = ?</p>
+<input id="v3"><button class="check" onclick="check('v3','see','fv3')">Prüfen</button>
+<div id="fv3" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 4</h3>
+<p>spielen = ?</p>
+<input id="v4"><button class="check" onclick="check('v4','play','fv4')">Prüfen</button>
+<div id="fv4" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 5</h3>
+<p>Hund = ?</p>
+<input id="v5"><button class="check" onclick="check('v5','dog','fv5')">Prüfen</button>
+<div id="fv5" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 6</h3>
+<p>Katze = ?</p>
+<input id="v6"><button class="check" onclick="check('v6','cat','fv6')">Prüfen</button>
+<div id="fv6" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 7</h3>
+<p>Apfel = ?</p>
+<input id="v7"><button class="check" onclick="check('v7','apple','fv7')">Prüfen</button>
+<div id="fv7" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 8</h3>
+<p>Schule = ?</p>
+<input id="v8"><button class="check" onclick="check('v8','school','fv8')">Prüfen</button>
+<div id="fv8" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 9</h3>
+<p>Buch = ?</p>
+<input id="v9"><button class="check" onclick="check('v9','book','fv9')">Prüfen</button>
+<div id="fv9" class="feedback"></div></div>
+
+<div class="card"><h3>Vokabel 10</h3>
+<p>Haus = ?</p>
+<input id="v10"><button class="check" onclick="check('v10','house','fv10')">Prüfen</button>
+<div id="fv10" class="feedback"></div></div>
+
+</div>
+
+<div id="help" class="content">
+<div class="card">
+<ul>
+<li>Present = play</li>
+<li>Past = played / went / saw</li>
+<li>Future = will</li>
+</ul>
+<div class="help-box">💡 Tipp: Achte auf Wörter wie "yesterday" oder "tomorrow"!</div>
+</div>
+</div>
+
+<script>
+function openTab(tab) {
+document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+document.querySelectorAll('.tablink').forEach(t=>t.classList.remove('active'));
+document.getElementById(tab).classList.add('active');
+event.target.classList.add('active');
+}
+
+function check(id, correct, feedback) {
+let v = document.getElementById(id).value.toLowerCase().trim();
+let f = document.getElementById(feedback);
+
+if(v === correct){
+f.innerHTML="✅ Richtig!";
+f.style.color="green";
+}else{
+f.innerHTML="❌ Versuch es nochmal!";
+f.style.color="red";
+}
+}
+</script>
+
+</body>
+</html>
